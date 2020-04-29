@@ -21,9 +21,9 @@
 **Test changes locally (with Docker)**  
 	1. Open terminal  
 	2. CD to the directory where is your Dockerfile  
-	3. Type (with the dot at the end as here): docker build -t project-management-system:v1 .  
+	3. Type (with the dot at the end as here): ```docker build -t project-management-system:v1 .```  
 	4. Verify that image is created using: docker images  
-	5. If it is created then: docker run -it --rm -p 8080:80 project-management-system:v1  
+	5. If it is created then: ```docker run -it --rm -p 8080:80 project-management-system:v1```  
 	6. Application is available on localhost:8080  
 	7. To stop running CTRL+C in terminal  
 **DISCLAIMER:** First time it takes +- 5min to pull all needed images while building. Next time it will build in a second.
