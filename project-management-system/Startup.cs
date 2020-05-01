@@ -4,9 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using project_management_system.Context;
+using project_management_system.Interfaces;
+using project_management_system.Services;
 
 namespace project_management_system
 {
@@ -23,6 +27,19 @@ namespace project_management_system
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddDbContext<UserContext>(options =>
+            {
+                options.UseSqlServer(Environment.GetEnvironmentVariable("PSI_SQL_SERVER"),
+                    sqlServerOptionsAction: sqlOptions =>
+                    {
+                        sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 10,
+                        maxRetryDelay: TimeSpan.FromSeconds(30),
+                        errorNumbersToAdd: null);
+                    });
+            });
+            
+            services.AddScoped<IDatabaseDriver, DatabaseDriver>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
