@@ -27,9 +27,10 @@ namespace project_management_system.Controllers
             return View(model);
         }
 
-        public IActionResult Privacy()
+        public IActionResult Board()
         {
-            return View();
+            TaskModel model = new TaskModel();
+            return View(model);
         }
 
         public IActionResult Submit(HomeFormModel model)

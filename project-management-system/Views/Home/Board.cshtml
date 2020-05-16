@@ -1,0 +1,58 @@
+﻿@model TaskModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" type="text/css" href="~/css/board.css">
+</head>
+
+<body>
+    <div class="board-layout">
+
+        <div class="left">
+            <div class="board-text">Task board</div>
+
+        </div>
+
+        <div id='boardlists' class="board-lists">
+            @foreach (var item in Model.statuses)
+            {
+                <div id='@item' class="board-list" ondrop="dropIt(event)" ondragover="allowDrop(event)">
+                    <div class="list-title">
+                        @item
+                    </div>
+
+                    @foreach (var task in Model.GetTasksByStatus(item))
+                    {
+                        <!--div id='@task' class="card" draggable="true" ondragstart="dragStart(event)">
+                            Name: @task["task_name"]
+                            Description: @task["task_description"]
+                        </div-->
+
+                        <div id='@item task1' class="card" draggable="true" ondragstart="dragStart(event)">
+                            Name: Task Example
+                            Status: @item
+                        </div>
+                        <div id='@item task2' class="card" draggable="true" ondragstart="dragStart(event)">
+                            Name: Task Example
+                            Status: @item
+                        </div>
+                        <div id='@item task3' class="card" draggable="true" ondragstart="dragStart(event)">
+                            Name: Task Example
+                            Status: @item
+                        </div>
+
+
+                    }
+
+                </div>
+            }
+
+        </div>
+    </div>
+    <script src='~/js/dragdropswap.js'></script>
+</body>
