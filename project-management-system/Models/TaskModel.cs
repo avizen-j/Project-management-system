@@ -7,8 +7,10 @@ namespace project_management_system.Models
 {
     public class TaskModel
     {
-        public string TaskId { get; set; }
-        public string TaskName { get; set; }
+        public int taskId { get; set; }
+        public string taskName { get; set; }
+        public string priority { get; set; }
+        public List<UserModel> watchers { get; set; } 
 
         public List<String> statuses = new List<string>()
         {
@@ -18,11 +20,28 @@ namespace project_management_system.Models
             {"Done"},
         };
 
+        public TaskModel()
+        {
+
+        }
+
+        public TaskModel(int taskId)
+        {
+            this.taskId = taskId;
+            //getTaskInfoById(taskId);
+        }
+
         public Dictionary<string, string> tempTask = new Dictionary<string, string>()
         {
-            {"task_name", "Create something"},
+            {"taskId", "001"},
             {"task_description", "Create something ril special"}
         };
+
+        public void AddTask()
+        {
+            // TODO - insert into tasks (...) values ...
+            throw new NotImplementedException();
+        }
 
         public List<Dictionary<string, object>> GetAllTasks()
         {

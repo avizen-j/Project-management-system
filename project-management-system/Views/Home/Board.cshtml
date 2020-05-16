@@ -10,49 +10,38 @@
     <link rel="stylesheet" type="text/css" href="~/css/board.css">
 </head>
 
-<body>
-    <div class="board-layout">
+<form asp-controller="Board" role="form" method="post" enctype="multipart/form-data" id="boardMainPage">
 
-        <div class="left">
-            <div class="board-text">Task board</div>
+    <body>
+        <div class="board-layout">
 
-        </div>
+            <div class="left">
+                <div class="board-text">Task board</div>
 
-        <div id='boardlists' class="board-lists">
-            @foreach (var item in Model.statuses)
-            {
-                <div id='@item' class="board-list" ondrop="dropIt(event)" ondragover="allowDrop(event)">
-                    <div class="list-title">
-                        @item
+            </div>
+
+            <div id='boardlists' class="board-lists">
+                @foreach (var item in Model.statuses)
+                {
+                    <div id='@item' class="board-list" ondrop="dropIt(event)" ondragover="allowDrop(event)">
+                        <div class="list-title">
+                            @item
+                        </div>
+
+                        @foreach (var task in Model.GetTasksByStatus(item))
+                        {
+                            <div id='@item task1' class="card" draggable="true" ondragstart="dragStart(event)">
+                                <b>Task Title @item</b>
+                                Priority: Major
+                                <a asp-controller="Board" asp-action="Task" asp-route-id="@task["taskId"]">View task</a>
+                            </div>
+                        }
+
                     </div>
+                }
 
-                    @foreach (var task in Model.GetTasksByStatus(item))
-                    {
-                        <!--div id='@task' class="card" draggable="true" ondragstart="dragStart(event)">
-                            Name: @task["task_name"]
-                            Description: @task["task_description"]
-                        </div-->
-
-                        <div id='@item task1' class="card" draggable="true" ondragstart="dragStart(event)">
-                            Name: Task Example
-                            Status: @item
-                        </div>
-                        <div id='@item task2' class="card" draggable="true" ondragstart="dragStart(event)">
-                            Name: Task Example
-                            Status: @item
-                        </div>
-                        <div id='@item task3' class="card" draggable="true" ondragstart="dragStart(event)">
-                            Name: Task Example
-                            Status: @item
-                        </div>
-
-
-                    }
-
-                </div>
-            }
-
+            </div>
         </div>
-    </div>
-    <script src='~/js/dragdropswap.js'></script>
-</body>
+        <script src='~/js/dragdropswap.js'></script>
+    </body>
+</form>

@@ -12,7 +12,13 @@ namespace project_management_system.Controllers
         public IActionResult Index()
         {
             var model = new TaskModel();
-            return View("../Views/Home.Board", model);
+            return View("../Views/Home/Board", model);
+        }
+
+        public IActionResult Task(int id)
+        {
+            var taskModel= new TaskModel(id);
+            return View("../Home/Task", taskModel);
         }
     }
 }
