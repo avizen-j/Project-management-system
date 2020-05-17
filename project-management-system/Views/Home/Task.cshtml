@@ -1,0 +1,64 @@
+﻿@model TaskModel
+@{
+    ViewData["Title"] = "Task";
+}
+<link rel="stylesheet" type="text/css" href="~/css/task.css">
+
+<div class="container">
+    <div class="card border-0 shadow my-5">
+        <div class="card-body p-5">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h5>@Model.TaskName</h5>
+
+                    <h6>Status</h6>
+                    <p> @Model.Status</p>
+
+                    <h6>Description</h6>
+                    <p> @Model.TaskDescription</p>
+
+                    <h6>Deadline</h6>
+                    <input type='text' class="form-control">
+
+                    <h5>Comments:</h5>
+                    <h5>Title description, Dec 7, 2017</h5>
+                    <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+                    <h5>Title description, Dec 7, 2017</h5>
+                    <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+
+
+                </div>
+
+                <div class="col-sm-4">
+                    <h6>Assignees:</h6>
+                    <p>assigner1</p>
+                    <p>assigner2</p>
+                    <input style="margin-bottom:10px" type='text' class="form-control" placeholder="Search for assignees...">
+                     
+                    <h6>Watchers:</h6>
+                    <p>watcher1</p>
+                    <p>watcher2</p>
+                    <input style="margin-bottom:10px" type='text' class="form-control" placeholder="Search for watchers...">
+
+                    <h6>Files:</h6>
+                    <p>fileDownloadLink1</p>
+                    <p>fileDownloadLink2</p>
+                    <a style="margin-bottom:10px" type="button" class="btn btn-outline-primary">Add file</a>
+
+                    <h6>Priority:</h6>
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                            currentPriority
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Major</a></li>
+                            <li><a href="#">Minor</a></li>
+                            <li><a href="#">Blocker</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
