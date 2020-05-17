@@ -26,7 +26,7 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   key: PSI_SQL_SERVER
-                  name: project-management-system-psi-config-awfw
+                  name: project-management-system-psi-config-hkcx
           image: >-
             gcr.io/stable-analogy-275618/github.com/avizen-j/project-management-system
           imagePullPolicy: IfNotPresent
@@ -40,10 +40,10 @@ metadata:
   name: project-management-system-psi-service
   namespace: default
 spec:
-  clusterIP: 10.97.0.147
+  clusterIP: 10.56.15.228
   externalTrafficPolicy: Cluster
   ports:
-    - nodePort: 32653
+    - nodePort: 32135
       port: 80
       protocol: TCP
       targetPort: 80
