@@ -2,46 +2,57 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <link rel="stylesheet" type="text/css" href="~/css/board.css">
-</head>
+        <link rel="stylesheet" type="text/css" href="~/css/board.css">
+        <link rel="stylesheet" type="text/css" href="~/css/task.css">
+
+    </head>
 
 <form asp-controller="Board" role="form" method="post" enctype="multipart/form-data" id="boardMainPage">
 
-    <body>
-        <div class="board-layout">
 
-            <div class="left">
-                <div class="board-text">Task board</div>
-
-            </div>
-
-            <div id='boardlists' class="board-lists">
-                @foreach (var item in Model.statuses)
-                {
-                    <div id='@item' class="board-list" ondrop="dropIt(event)" ondragover="allowDrop(event)">
-                        <div class="list-title">
-                            @item
+    <div class="container">
+        
+                    <div class="board-layout" style="border-radius: 15px">
+                        <div class="left">
+                            <div class="board-text">Task board</div>
                         </div>
 
-                        @foreach (var task in Model.GetTasksByStatus(item))
-                        {
-                            <div id='@item task1' class="card" draggable="true" ondragstart="dragStart(event)">
-                                <b>Task Title @item</b>
-                                Priority: Major
-                                <a asp-controller="Board" asp-action="Task" asp-route-id="@task["taskId"]">View task</a>
-                            </div>
-                        }
+                        <div id='boardlists' class="board-lists">
+                            @foreach (var item in Model.statuses)
+                            {
+                                <div id='@item' class="board-list" ondrop="dropIt(event)" ondragover="allowDrop(event)">
+                                    <div class="list-title">
+                                        @item
+                                    </div>
 
+                                    @foreach (var task in Model.GetTasksByStatus(item))
+                                    {
+                                        <div id='@item task1' class="card" draggable="true" ondragstart="dragStart(event)">
+                                            <b>Task Title @item</b>
+                                            Priority: Major
+                                            <a asp-controller="Board" asp-action="Task" asp-route-id="@task["taskId"]">View task</a>
+                                        </div>
+                                    }
+
+                                </div>
+                            }
+
+                        </div>
                     </div>
-                }
-
+                    <script src='~/js/dragdropswap.js'></script>
             </div>
-        </div>
-        <script src='~/js/dragdropswap.js'></script>
+    </div>
+
+
+
+
+    <body>
+
+        
     </body>
 </form>

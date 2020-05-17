@@ -7,9 +7,11 @@ namespace project_management_system.Models
 {
     public class TaskModel
     {
-        public int taskId { get; set; }
-        public string taskName { get; set; }
-        public string priority { get; set; }
+        public int TaskID { get; set; }
+        public string TaskName { get; set; }
+        public string TaskDescription { get; set; }
+        public string Priority { get; set; }
+        public string Status { get; set; }
         public List<UserModel> watchers { get; set; } 
 
         public List<String> statuses = new List<string>()
@@ -25,9 +27,13 @@ namespace project_management_system.Models
 
         }
 
-        public TaskModel(int taskId)
+        public TaskModel(int taskId, string taskName, string taskDescription, string priority, string status)
         {
-            this.taskId = taskId;
+            this.TaskID = taskId;
+            this.TaskName = taskName;
+            this.TaskDescription = taskDescription;
+            this.Priority = priority;
+            this.Status= status;
             //getTaskInfoById(taskId);
         }
 

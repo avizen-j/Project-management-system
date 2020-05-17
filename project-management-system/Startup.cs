@@ -27,7 +27,7 @@ namespace project_management_system
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<UserContext>(options =>
+            services.AddDbContext<MyContext>(options =>
             {
                 options.UseSqlServer(Environment.GetEnvironmentVariable("PSI_SQL_SERVER"),
                     sqlServerOptionsAction: sqlOptions =>
