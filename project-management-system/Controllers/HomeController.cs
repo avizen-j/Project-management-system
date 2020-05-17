@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using project_management_system.Context;
 using project_management_system.Interfaces;
 using project_management_system.Models;
 
@@ -27,9 +28,10 @@ namespace project_management_system.Controllers
             return View(model);
         }
 
-        public IActionResult Privacy()
+        public IActionResult Board()
         {
-            return View();
+            TaskModel model = new TaskModel();
+            return View(model);
         }
 
         public IActionResult Submit(HomeFormModel model)
@@ -37,7 +39,17 @@ namespace project_management_system.Controllers
             // TEMPORARY: For demonstration and test purposes only.
             var creationDate = DateTime.Now;
             model.User.RegistrationDate = creationDate;
-            _databaseDriver.InsertUser(model.User);
+            //_databaseDriver.InsertUser(model.User);
+
+            var task = new UserTask()
+            {
+                TaskID = 1,
+                TaskName = "Create something",
+                TaskDescription = "aaasdas das dasd asdas d asd asd asd as das d",
+                Priority = "Major",
+                Status = "InProgress"
+            };
+            _databaseDriver.InsertTask(task);
 
             return View("Index", model);
         }

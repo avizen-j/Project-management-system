@@ -12,11 +12,20 @@ namespace project_management_system.Services
 {
     public class DatabaseDriver : IDatabaseDriver
     {
-        private UserContext _userContext;
+        private MyContext _userContext;
 
-        public DatabaseDriver(UserContext userContext)
+        public DatabaseDriver(MyContext userContext)
         {
             _userContext = userContext;
+        }
+        public async Task InsertTask(UserTask task)
+        {
+            _userContext.UserTasks.Add(task);
+            _userContext.SaveChanges();
+        }
+        public async Task<UserTask> GetTask(int taskid)
+        {
+            return _userContext.UserTasks.Where(t => t.TaskID == taskid).Single();
         }
 
         public async Task InsertUser(User user)
