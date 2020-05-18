@@ -68,5 +68,32 @@ namespace project_management_system.Services
         {
             return await _context.Users.FirstOrDefaultAsync(t => t.UserID == userId);
         }
+
+        // Link user and task(assignment).
+        public async Task LinkUserAssignment(int assignmentId, int userId)
+        {
+            var assignment = await GetAssignmentById(assignmentId);
+            var user = await GetUserById(userId);
+            var link = new AssignmentUser()
+            {
+                Assignment = assignment,
+                User = user,
+            };
+
+            _context.Add(link);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<User>> GetUsersBelongingToAssignment(int assignmentId)
+        {
+            return await _context.Users.Where(item => item.AssignmentUsers.Any(j => j.AssignmentID == assignmentId))
+                                       .ToListAsync();
+        }
+
+        public async Task<List<Assignment>> GetAssignmentsBelongingToUser(int userId)
+        {
+            return await _context.Assignments.Where(item => item.AssignmentUsers.Any(j => j.UserID == userId))
+                                             .ToListAsync();
+        }
     }
 }

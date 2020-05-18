@@ -21,5 +21,9 @@ namespace project_management_system.Interfaces
         public Task<List<User>> GetAllUsers();
         public Task<User> GetUserById(int userId);
 
+        // Links.
+        public Task LinkUserAssignment(int assignmentId, int userId);
+        public Task<List<Assignment>> GetAssignmentsBelongingToUser(int userId);
+        public Task<List<User>> GetUsersBelongingToAssignment(int assignmentId);
     }
 }
