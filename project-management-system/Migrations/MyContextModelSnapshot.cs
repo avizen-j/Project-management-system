@@ -19,12 +19,47 @@ namespace project_management_system.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("project_management_system.Context.Assignment", b =>
+                {
+                    b.Property<int>("AssignmentID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AssignmentDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AssignmentName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Priority")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AssignmentID");
+
+                    b.ToTable("Assignments");
+                });
+
+            modelBuilder.Entity("project_management_system.Context.AssignmentUser", b =>
+                {
+                    b.Property<int>("AssignmentID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("AssignmentID", "UserID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("AssignmentUser");
+                });
+
             modelBuilder.Entity("project_management_system.Context.User", b =>
                 {
-                    b.Property<Guid>("UserID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
 
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
@@ -40,31 +75,19 @@ namespace project_management_system.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("project_management_system.Context.UserTask", b =>
+            modelBuilder.Entity("project_management_system.Context.AssignmentUser", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
+                    b.HasOne("project_management_system.Context.Assignment", "Assignment")
+                        .WithMany("AssignmentUsers")
+                        .HasForeignKey("AssignmentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<string>("Priority")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TaskDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TaskID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TaskName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserTasks");
+                    b.HasOne("project_management_system.Context.User", "User")
+                        .WithMany("AssignmentUsers")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
