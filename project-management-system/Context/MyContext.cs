@@ -9,17 +9,26 @@ namespace project_management_system.Context
     public class MyContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-        public DbSet<UserTask> UserTasks { get; set; }
+        public DbSet<Assignment> Assignments { get; set; }
 
         public MyContext(DbContextOptions options) : base(options)
         {
-
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().Property(x => x.UserID).HasDefaultValueSql("NEWID()");
-            modelBuilder.Entity<UserTask>().Property(x => x.Id).HasDefaultValueSql("NEWID()");
+            modelBuilder.Entity<AssignmentUser>().HasKey(k => new { k.AssignmentID, k.UserID });
+
+            modelBuilder.Entity<AssignmentUser>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.AssignmentUsers)
+                .HasForeignKey(x => x.UserID);
+
+            modelBuilder.Entity<AssignmentUser>()
+               .HasOne(x => x.Assignment)
+               .WithMany(x => x.AssignmentUsers)
+               .HasForeignKey(x => x.AssignmentID);
         }
     }
 }
