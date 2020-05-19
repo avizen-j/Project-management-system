@@ -15,6 +15,7 @@ namespace project_management_system.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IDatabaseDriver _databaseDriver;
+        private static readonly Random random = new Random();
 
         public HomeController(ILogger<HomeController> logger, IDatabaseDriver databaseDriver)
         {
@@ -34,22 +35,18 @@ namespace project_management_system.Controllers
             return View(model);
         }
 
-        public IActionResult Submit(HomeFormModel model)
+        public async Task<IActionResult> Submit(HomeFormModel model)
         {
             // TEMPORARY: For demonstration and test purposes only.
-            var creationDate = DateTime.Now;
-            model.User.RegistrationDate = creationDate;
-            //_databaseDriver.InsertUser(model.User);
+            
+            // Creating assignment
+            //var assignmentId = 569;
 
-            var task = new UserTask()
-            {
-                TaskID = 1,
-                TaskName = "Create something",
-                TaskDescription = "aaasdas das dasd asdas d asd asd asd as das d",
-                Priority = "Major",
-                Status = "InProgress"
-            };
-            _databaseDriver.InsertTask(task);
+            // Creating user
+            //var userId = 255;
+
+            // Linking assigning user to assignment.
+            //await _databaseDriver.LinkUserAssignment(assignmentId, userId);
 
             return View("Index", model);
         }

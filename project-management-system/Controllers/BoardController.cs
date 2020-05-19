@@ -26,10 +26,10 @@ namespace project_management_system.Controllers
             return View("../Views/Home/Board", model);
         }
 
-        public IActionResult Task(int id)
+        public async Task<IActionResult> Task(int id)
         {
-            var task = _databaseDriver.GetTask(id);
-            var taskModel = new TaskModel(task.Result.TaskID, task.Result.TaskName, task.Result.TaskDescription, task.Result.Priority, task.Result.Status);
+            var task = await _databaseDriver.GetAssignmentById(id);
+            var taskModel = new TaskModel(task.AssignmentID, task.AssignmentName, task.AssignmentDescription, task.Priority, task.Status);
             return View("../Home/Task", taskModel);
         }
     }

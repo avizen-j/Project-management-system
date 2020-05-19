@@ -8,10 +8,22 @@ namespace project_management_system.Interfaces
 {
     public interface IDatabaseDriver
     {
+        // Assignments.
+        public Task InsertAssignment(Assignment task);
+        public Task DeleteAssignment(int assignmentId);
+        public Task<List<Assignment>> GetAllAssignments();
+        public Task<Assignment> GetAssignmentById(int assignmentId);
+        public Task<List<Assignment>> GetAssignmentsByStatus(string status);
+
+        // Users.
         public Task InsertUser(User user);
-        public Task InsertTask(UserTask task);
-        public Task<UserTask> GetTask(int taskid);
         public Task DeleteUser(string username);
-        public Task<bool> CheckIfExists(string username, string password);
+        public Task<List<User>> GetAllUsers();
+        public Task<User> GetUserById(int userId);
+
+        // Links.
+        public Task LinkUserAssignment(int assignmentId, int userId);
+        public Task<List<Assignment>> GetAssignmentsBelongingToUser(int userId);
+        public Task<List<User>> GetUsersBelongingToAssignment(int assignmentId);
     }
 }

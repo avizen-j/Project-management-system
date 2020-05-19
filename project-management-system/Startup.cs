@@ -37,9 +37,9 @@ namespace project_management_system
                         maxRetryDelay: TimeSpan.FromSeconds(30),
                         errorNumbersToAdd: null);
                     });
-            });
+            }, ServiceLifetime.Transient);
             
-            services.AddScoped<IDatabaseDriver, DatabaseDriver>();
+            services.AddTransient<IDatabaseDriver, DatabaseDriver>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
