@@ -1,6 +1,6 @@
 ﻿@model TaskModel
 @{
-    ViewData["Title"] = "Task";
+    ViewData["Title"] = "Assignment";
 }
 <link rel="stylesheet" type="text/css" href="~/css/task.css">
 
@@ -9,13 +9,13 @@
         <div class="card-body p-5">
             <div class="row">
                 <div class="col-sm-8">
-                    <h5>@Model.TaskName</h5>
+                    <h5>@Model.Assignment.AssignmentName</h5>
 
                     <h6>Status</h6>
-                    <p> @Model.Status</p>
+                    <p> @Model.Assignment.Status</p>
 
                     <h6>Description</h6>
-                    <p> @Model.TaskDescription</p>
+                    <p> @Model.Assignment.AssignmentDescription</p>
 
                     <h6>Deadline</h6>
                     <input type='text' class="form-control">

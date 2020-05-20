@@ -7,9 +7,9 @@ namespace project_management_system.Enums
 {
     public enum Status
     {
-        Backlog,
         ToDo,
         InProgress,
+        InReview,
         Done
     }
 }

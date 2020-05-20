@@ -31,7 +31,10 @@ namespace project_management_system.Controllers
 
         public IActionResult Board()
         {
-            TaskModel model = new TaskModel();
+            TaskModel model = new TaskModel()
+            {
+                Assignment = new Assignment(),
+            };
             return View(model);
         }
 
