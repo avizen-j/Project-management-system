@@ -45,6 +45,16 @@ namespace project_management_system.Services
             return await _context.Assignments.Where(t => t.Status == status).ToListAsync();
         }
 
+        public async Task UpdateAssignmentStatus(int assignmentId, string newStatus)
+        {
+            var assignment = await _context.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignmentId);
+            if (assignment != default)
+            {
+                assignment.Status = newStatus;
+                await _context.SaveChangesAsync();
+            }
+        }
+
         // Users.
         public async Task InsertUser(User user)
         {
