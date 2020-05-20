@@ -14,6 +14,8 @@ namespace project_management_system.Interfaces
         public Task<List<Assignment>> GetAllAssignments();
         public Task<Assignment> GetAssignmentById(int assignmentId);
         public Task<List<Assignment>> GetAssignmentsByStatus(string status);
+        public Task UpdateAssignmentStatus(int assignmentId, string newStatus);
+
 
         // Users.
         public Task InsertUser(User user);

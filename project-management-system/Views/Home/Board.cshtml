@@ -12,7 +12,7 @@
 
     </head>
 
-    <form asp-controller="Board" role="form" method="post" enctype="multipart/form-data" id="boardMainPage">
+    <form role="form" enctype="multipart/form-data" id="boardMainPage">
 
 
         <div class="container">
@@ -22,57 +22,112 @@
                     <div class="board-text">Task board</div>
                 </div>
 
-                <div id='boardlists' class="board-lists">
-                    @foreach (var item in Model.statuses)
+               <div id='boardlists' class="board-lists">
+                    @foreach (var item in Enum.GetValues(typeof(project_management_system.Enums.Status)))
                     {
-                    <div id='@item' class="board-list" ondrop="dropIt(event)" ondragover="allowDrop(event)">
-                        <div class="list-title">
-                            @item
-                        </div>
-
-                        @foreach (var task in Model.GetTasksByStatus(item))
-                        {
-                            <div id='@item task1' class="card" draggable="true" ondragstart="dragStart(event)">
-                                <b>Task Title @item</b>
-                                Priority: Major
-                                <a asp-controller="Board" asp-action="Task" asp-route-id="@task["taskId"]">View task</a>
-                                @*UNCOMMENT LINE BELLOW IF YOU WANT TO USE MODAL*@
-                                @*<a href="#exampleModalCenter" data-toggle="modal" data-target="#exampleModalCenter_@item" data-id="@item">View task</a>*@
+                        <div id='@item' class="board-list" ondrop="dropIt(event)" ondragover="allowDrop(event)">
+                            <div class="list-title">
+                                @item.ToString()
                             </div>
-                            <!-- Modal -->
-                            <div class="modal fade" id="exampleModalCenter_@item" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            @item
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary">Save changes</button>
+
+                            @foreach (var task in await Model.GetTasksByStatus(item.ToString()))
+                            {
+                                <div id='@task.AssignmentID' class="card" draggable="true" ondragstart="dragStart(event)">
+                                    <b>@task.AssignmentName</b>
+                                    Priority: @task.Status
+                                    <a asp-controller="Board" asp-action="Task" asp-route-id="@task.AssignmentID">View task</a>
+                                    @*UNCOMMENT LINE BELLOW IF YOU WANT TO USE MODAL*@
+                                    @*<a href="#exampleModalCenter" data-toggle="modal" data-target="#exampleModalCenter_@item" data-id="@item">View task</a>*@
+                                </div>
+                                <div class="modal fade" id="exampleModalCenter_@item" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                @item
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-primary">Save changes</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        }
+                            }
 
-                    </div>
+                        </div>
                     }
 
                 </div>
+
+                <div>
+                    <a class="btn btn-primary" href="#newTaskModal" data-toggle="modal" data-target="#newTaskModal" data-id="1">New task</a>
+                </div>
+
+                <div class="modal fade" id="newTaskModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Create new task</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Task name:</label>
+                                        <input asp-for="@Model.Assignment.AssignmentName" type="text" class="form-control" id="taskName" placeholder="Enter task name">
+
+                                        <label >Description:</label>
+                                        <textarea asp-for="@Model.Assignment.AssignmentDescription" class="form-control" id="taskDescription" rows="3"></textarea>
+
+                                        <label>Project:</label>
+                                        <select class="form-control" id="projectSelect">
+                                            <option>project1</option>
+                                            <option>project2</option>
+                                            <option>project3</option>
+                                        </select>
+
+                                    </div>
+                                    <div class="col-md-6">
+
+                                        <label>Priority:</label>
+                                        <select asp-for="@Model.Assignment.Priority" class="form-control" id="prioritySelect">
+                                            <option>Minor</option>
+                                            <option>Major</option>
+                                            <option>Critical</option>
+                                            <option>Blocker</option>
+                                        </select>
+
+                                        <label>Type:</label>
+                                        <select class="form-control" id="typeSelect">
+                                            <option>New feature</option>
+                                            <option>Bug</option>
+                                            <option>TechDebt</option>
+                                            <option>Improvement</option>
+                                        </select>
+
+                                        <label>Project:</label>
+                                        <input type="text" class="form-control" id="taskDeadline" placeholder="Enter deadline">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button class="btn btn-primary" type="submit" asp-controller="Board" asp-action="CreateTask">Create</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <script src='~/js/dragdropswap.js'></script>
         </div>
 
-       
-
-        <body>
-
-
-        </body>
     </form>
