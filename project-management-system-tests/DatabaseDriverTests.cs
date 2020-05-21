@@ -29,6 +29,8 @@ namespace project_management_system_tests
             _driver = new DatabaseDriver(_myContext);
         }
 
+        // Assignments.
+
         [Test]
         public async Task InsertAssignment_inserts_assignment_to_db()
         {
@@ -72,6 +74,97 @@ namespace project_management_system_tests
         }
 
         [Test]
+        public async Task UpdateAssignmentStatus_updates_assignment_status_with_new_one()
+        {
+            var newStatus = Status.InProgress;
+            var assignment = new Assignment()
+            {
+                AssignmentID = 111,
+                AssignmentDescription = "Test description",
+                AssignmentName = "First assignment",
+                Priority = Priority.Minor,
+                Status = Status.ToDo,
+            };
+            _myContext.Assignments.Add(assignment);
+            await _myContext.SaveChangesAsync();
+
+            var oldStatus = await _myContext.Assignments.Where(r => r.AssignmentID == assignment.AssignmentID).Select(t => t.Status).SingleOrDefaultAsync();
+            await _driver.UpdateAssignmentStatus(assignment.AssignmentID, newStatus);
+            var updatedStatus = await _myContext.Assignments.Where(r => r.AssignmentID == assignment.AssignmentID).Select(t => t.Status).SingleOrDefaultAsync();
+
+            updatedStatus.Should().Be(newStatus);
+        }
+
+        [Test]
+        public async Task UpdateAssignmentPriority_updates_assignment_priority_with_new_one()
+        {
+            var newPriority = Priority.Critical;
+            var assignment = new Assignment()
+            {
+                AssignmentID = 111,
+                AssignmentDescription = "Test description",
+                AssignmentName = "First assignment",
+                Priority = Priority.Minor,
+                Status = Status.ToDo,
+            };
+            _myContext.Assignments.Add(assignment);
+            await _myContext.SaveChangesAsync();
+
+            var oldPriority = await _myContext.Assignments.Where(r => r.AssignmentID == assignment.AssignmentID).Select(t => t.Priority).SingleOrDefaultAsync();
+            await _driver.UpdateAssignmentPriority(assignment.AssignmentID, newPriority);
+            var updatedPriority = await _myContext.Assignments.Where(r => r.AssignmentID == assignment.AssignmentID).Select(t => t.Priority).SingleOrDefaultAsync();
+
+            updatedPriority.Should().Be(newPriority);
+        }
+
+        [Test]
+        public async Task UpdateAssignmentStartDate_updates_assignment_start_date_with_new_one()
+        {
+            var newDate = DateTime.Now.AddDays(2);
+            var assignment = new Assignment()
+            {
+                AssignmentID = 111,
+                AssignmentDescription = "Test description",
+                AssignmentName = "First assignment",
+                Priority = Priority.Minor,
+                Status = Status.ToDo,
+                StartDate = DateTime.Now,
+            };
+            _myContext.Assignments.Add(assignment);
+            await _myContext.SaveChangesAsync();
+
+            var oldDate = await _myContext.Assignments.Where(r => r.AssignmentID == assignment.AssignmentID).Select(t => t.StartDate).SingleOrDefaultAsync();
+            await _driver.UpdateAssignmentStartDate(assignment.AssignmentID, newDate);
+            var updatedDate = await _myContext.Assignments.Where(r => r.AssignmentID == assignment.AssignmentID).Select(t => t.StartDate).SingleOrDefaultAsync();
+
+            updatedDate.Should().Be(newDate);
+        }
+
+        [Test]
+        public async Task UpdateAssignmentStartDate_updates_assignment_end_date_with_new_one()
+        {
+            var newDate = DateTime.Now.AddDays(6);
+            var assignment = new Assignment()
+            {
+                AssignmentID = 111,
+                AssignmentDescription = "Test description",
+                AssignmentName = "First assignment",
+                Priority = Priority.Minor,
+                Status = Status.ToDo,
+                EndDate = DateTime.Now,
+            };
+            _myContext.Assignments.Add(assignment);
+            await _myContext.SaveChangesAsync();
+
+            var oldDate = await _myContext.Assignments.Where(r => r.AssignmentID == assignment.AssignmentID).Select(t => t.EndDate).SingleOrDefaultAsync();
+            await _driver.UpdateAssignmentEndDate(assignment.AssignmentID, newDate);
+            var updatedDate = await _myContext.Assignments.Where(r => r.AssignmentID == assignment.AssignmentID).Select(t => t.EndDate).SingleOrDefaultAsync();
+
+            updatedDate.Should().Be(newDate);
+        }
+
+        // Users. 
+        [Test]
         public async Task InsertUser_inserts_user_to_db()
         {
             var expectedUser = new User()
@@ -92,6 +185,30 @@ namespace project_management_system_tests
         }
 
         [Test]
+        public async Task InsertUser_throws_if_same_user_id_is_inserted()
+        {
+            var expectedUser = new User()
+            {
+                UserID = 111,
+                Username = "TestUser",
+                Password = "Plaintextpassword",
+                RegistrationDate = DateTime.Now,
+            };
+
+            var duplicateUser = new User()
+            {
+                UserID = 111,
+                Username = "Different",
+                Password = "Plaintextpassword",
+                RegistrationDate = DateTime.Now,
+            };
+
+            await _driver.InsertUser(expectedUser);
+
+            await _driver.Awaiting(s => s.InsertUser(duplicateUser)).Should().ThrowAsync<InvalidOperationException>();
+        }
+
+        [Test]
         public async Task DeleteUser_deletes_user_from_db()
         {
             var expectedUser = new User()
@@ -109,6 +226,8 @@ namespace project_management_system_tests
             var result = await _myContext.Users.FirstOrDefaultAsync(r => r.UserID == expectedUser.UserID);
             result.Should().Be(default);
         }
+
+        // Links.
 
         [Test]
         public async Task LinkUserAssignment_links_user_with_several_assignments()
@@ -202,26 +321,155 @@ namespace project_management_system_tests
             result[2].Should().Be(user3);
         }
 
+        // Projects.
         [Test]
-        public async Task UpdateAssignmentStatus_updates_assignment_status_with_new_one()
+        public async Task InsertProject_inserts_new_project()
         {
-            var newStatus = Status.InProgress;
+            var project = new Project()
+            {
+                ProjectID = 3123,
+                ProjectName = "testProject",
+                ProjectDescription = "For those who want to try something new",
+                CreationDate = DateTime.Now,
+                StartDate = DateTime.Now.AddDays(-3),
+                EndDate = DateTime.Now.AddDays(10),
+            };
+
+            await _driver.InsertProject(project);
+            var actualProject = await _myContext.Projects.Where(item => project.ProjectID == project.ProjectID).ToListAsync();
+
+            actualProject.Count.Should().Be(1);
+            actualProject[0].ProjectName.Should().Be(project.ProjectName);
+            actualProject[0].ProjectDescription.Should().Be(project.ProjectDescription);
+            actualProject[0].CreationDate.Should().Be(project.CreationDate);
+            actualProject[0].StartDate.Should().Be(project.StartDate);
+            actualProject[0].EndDate.Should().Be(project.EndDate);
+        }
+
+        [Test]
+        public async Task InsertProject_throws_when_inserts_same_record()
+        {
+            var project1 = new Project()
+            {
+                ProjectID = 3123,
+                ProjectName = "testProject",
+                ProjectDescription = "For those who want to try something new",
+                CreationDate = DateTime.Now,
+                StartDate = DateTime.Now.AddDays(-3),
+                EndDate = DateTime.Now.AddDays(10),
+            };
+
+            var duplicateProjectId = new Project()
+            {
+                ProjectID = 3123,
+                ProjectName = "different",
+                ProjectDescription = "For those who want to try something new",
+                CreationDate = DateTime.Now,
+                StartDate = DateTime.Now.AddDays(2),
+                EndDate = DateTime.Now.AddDays(5),
+            };
+
+            await _driver.InsertProject(project1);
+
+            await _driver.Awaiting(s => s.InsertProject(duplicateProjectId)).Should().ThrowAsync<InvalidOperationException>();
+        }
+
+        [Test]
+        public async Task GetAvailableProjects_returns_list_of_projects()
+        {
+            var project1 = new Project()
+            {
+                ProjectID = 3123,
+                ProjectName = "testProject",
+                ProjectDescription = "For those who want to try something new",
+                CreationDate = DateTime.Now,
+                StartDate = DateTime.Now.AddDays(-3),
+                EndDate = DateTime.Now.AddDays(10),
+            };
+            var project2 = new Project()
+            {
+                ProjectID = 1424,
+                ProjectName = "testProject2",
+                ProjectDescription = "For those ...",
+                CreationDate = DateTime.Now,
+                StartDate = DateTime.Now.AddDays(-4),
+                EndDate = DateTime.Now.AddDays(12),
+            };
+            var project3 = new Project()
+            {
+                ProjectID = 12441,
+                ProjectName = "testProject3",
+                ProjectDescription = "Testing",
+                CreationDate = DateTime.Now,
+                StartDate = DateTime.Now.AddDays(1),
+                EndDate = DateTime.Now.AddDays(12),
+            };
+
+            await _driver.InsertProject(project1);
+            await _driver.InsertProject(project2);
+            await _driver.InsertProject(project3);
+            var projects = await _driver.GetAvailableProjects();
+
+            projects.Count.Should().Be(3);
+            projects[0].ProjectName.Should().Be(project1.ProjectName);
+            projects[0].ProjectDescription.Should().Be(project1.ProjectDescription);
+            projects[0].CreationDate.Should().Be(project1.CreationDate);
+            projects[0].StartDate.Should().Be(project1.StartDate);
+            projects[0].EndDate.Should().Be(project1.EndDate);
+            projects[1].ProjectName.Should().Be(project2.ProjectName);
+            projects[1].ProjectDescription.Should().Be(project2.ProjectDescription);
+            projects[1].CreationDate.Should().Be(project2.CreationDate);
+            projects[1].StartDate.Should().Be(project2.StartDate);
+            projects[1].EndDate.Should().Be(project2.EndDate);
+            projects[2].ProjectName.Should().Be(project3.ProjectName);
+            projects[2].ProjectDescription.Should().Be(project3.ProjectDescription);
+            projects[2].CreationDate.Should().Be(project3.CreationDate);
+            projects[2].StartDate.Should().Be(project3.StartDate);
+            projects[2].EndDate.Should().Be(project3.EndDate);
+        }
+
+        [Test]
+        public async Task UpdateAssignmentProject_updates_assignment_with_new_project()
+        {
+            var oldProject = new Project()
+            {
+                ProjectID = 3123,
+                ProjectName = "testProject",
+                ProjectDescription = "For those who want to try something new",
+                CreationDate = DateTime.Now,
+                StartDate = DateTime.Now.AddDays(-3),
+                EndDate = DateTime.Now.AddDays(10),
+            };
+
             var assignment = new Assignment()
             {
-                AssignmentID = 111,
-                AssignmentDescription = "Test description",
-                AssignmentName = "First assignment",
-                Priority = Priority.Minor,
+                AssignmentID = 112,
+                AssignmentDescription = "Test description 2",
+                AssignmentName = "Second assignment",
+                Priority = Priority.Major,
                 Status = Status.ToDo,
+                Project = oldProject,
             };
-            _myContext.Assignments.Add(assignment);
-            await _myContext.SaveChangesAsync();
 
-            var oldStatus = await _myContext.Assignments.Where(r => r.AssignmentID == assignment.AssignmentID).Select(t => t.Status).SingleOrDefaultAsync();
-            await _driver.UpdateAssignmentStatus(assignment.AssignmentID, newStatus);
-            var updatedStatus = await _myContext.Assignments.Where(r => r.AssignmentID == assignment.AssignmentID).Select(t => t.Status).SingleOrDefaultAsync();
+            var newProject = new Project()
+            {
+                ProjectID = 1424,
+                ProjectName = "testProject123",
+                ProjectDescription = "For those ...",
+                CreationDate = DateTime.Now,
+                StartDate = DateTime.Now.AddDays(-4),
+                EndDate = DateTime.Now.AddDays(12),
+            };
 
-            updatedStatus.Should().Be(newStatus);
+            await _driver.InsertProject(oldProject);
+            await _driver.InsertProject(newProject);
+            await _driver.InsertAssignment(assignment);
+            var beforeUpdate = (await _myContext.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignment.AssignmentID)).ProjectID;
+            await _driver.UpdateAssignmentProject(assignment.AssignmentID, newProject.ProjectID);
+            var afterUpdate = await _myContext.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignment.AssignmentID);
+
+            beforeUpdate.Should().Be(oldProject.ProjectID);
+            afterUpdate.ProjectID.Should().Be(newProject.ProjectID);
         }
     }
 }
