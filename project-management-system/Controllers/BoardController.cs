@@ -36,6 +36,8 @@ namespace project_management_system.Controllers
             try
             {
                 var assignment = await _databaseDriver.GetAssignmentById(id);
+                var project = await _databaseDriver.GetProjectById(assignment.ProjectID);
+                assignment.Project = project;
                 var taskModel = new TaskModel(_databaseDriver);
                 taskModel.Assignment = assignment;
                 return View("../Home/Assignment", taskModel);
@@ -108,6 +110,20 @@ namespace project_management_system.Controllers
             }
         }
 
+        public async Task<IActionResult> UpdateAssignmentProject(int id, string projectNumber)
+        {
+            try
+            {
+                var pNumber = int.Parse(projectNumber);
+                await _databaseDriver.UpdateAssignmentProject(id, pNumber);
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View("../Shared/Error", new ErrorViewModel { Message = "Project cannot be updated" });
+            }
+        }
+
         public async Task<IActionResult> UpdateAssignmentStartDate(int id, DateTime startDate)
         {
             try
@@ -137,6 +153,28 @@ namespace project_management_system.Controllers
         public async Task UpdateBoardAssignment(int assignmentId, Status status)
         {
             await _databaseDriver.UpdateAssignmentStatus(assignmentId, status);
+        }
+
+        public async Task<IActionResult> Reply(int id, string comment)
+        {
+            try
+            {
+                var assignment = await _databaseDriver.GetAssignmentById(id);
+                var newComment = new Comment()
+                {
+                    CommentID = random.Next(10000),
+                    CommentContent = comment,
+                    CreationTime = DateTime.Now,
+                };
+
+                await _databaseDriver.AddNewComment(id, newComment);
+
+                return RedirectToAction("Task", new { id = id });
+            }
+            catch (Exception ex)
+            {
+                return View("../Shared/Error", new ErrorViewModel { Message = "Comment cannot be added" + ex.StackTrace});
+            }
         }
 
     }

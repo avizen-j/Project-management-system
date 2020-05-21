@@ -87,6 +87,18 @@ namespace project_management_system.Services
             }
         }
 
+
+        public async Task UpdateAssignmentProject(int assignmentId, int pNumber)
+        {
+            var project = await _context.Projects.FirstOrDefaultAsync(t => t.ProjectID == pNumber);
+            var assignment = await _context.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignmentId);
+            if (assignment != default && project != default)
+            {
+                assignment.ProjectID = project.ProjectID;
+                await _context.SaveChangesAsync();
+            }
+        }
+
         // Users.
         public async Task InsertUser(User user)
         {
@@ -158,5 +170,41 @@ namespace project_management_system.Services
                 await _context.SaveChangesAsync();
             }
         }
+
+        // Comments
+        public async Task AddNewComment(int assignmentId, Comment comment)
+        {
+            // _context.Comments.Add(comment);
+            var result = await _context.Assignments.FirstOrDefaultAsync(b => b.AssignmentID == assignmentId);
+            if (result.Comments == null)
+            {
+                result.Comments = new List<Comment>();
+            }
+            result.Comments.Add(comment);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<Comment>> GetAllAssignmentComments(int assignmentId)
+        {
+            return await _context.Comments.Where(item => item.AssignmentID == assignmentId).ToListAsync();
+        }
+
+        // Projects.
+        public async Task InsertProject(Project project)
+        {
+            _context.Projects.Add(project);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<Project>> GetAvailableProjects()
+        {
+            return await _context.Projects.ToListAsync();
+        }
+
+        public async Task<Project> GetProjectById(int pNumber)
+        {
+            return await _context.Projects.FirstOrDefaultAsync(item => item.ProjectID == pNumber);
+        }
+
     }
 }

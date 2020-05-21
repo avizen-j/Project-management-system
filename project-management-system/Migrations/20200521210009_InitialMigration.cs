@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace project_management_system.Migrations
 {
-    public partial class AddedProjectEntity : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Project",
+                name: "Projects",
                 columns: table => new
                 {
                     ProjectID = table.Column<int>(nullable: false),
@@ -20,7 +20,7 @@ namespace project_management_system.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Project", x => x.ProjectID);
+                    table.PrimaryKey("PK_Projects", x => x.ProjectID);
                 });
 
             migrationBuilder.CreateTable(
@@ -35,15 +35,15 @@ namespace project_management_system.Migrations
                     CreationDate = table.Column<DateTime>(nullable: false),
                     StartDate = table.Column<DateTime>(nullable: false),
                     EndDate = table.Column<DateTime>(nullable: false),
-                    ProjectID = table.Column<int>(nullable: true)
+                    ProjectID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Assignments", x => x.AssignmentID);
                     table.ForeignKey(
-                        name: "FK_Assignments_Project_ProjectID",
+                        name: "FK_Assignments_Projects_ProjectID",
                         column: x => x.ProjectID,
-                        principalTable: "Project",
+                        principalTable: "Projects",
                         principalColumn: "ProjectID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -56,17 +56,37 @@ namespace project_management_system.Migrations
                     RegistrationDate = table.Column<DateTime>(nullable: false),
                     Username = table.Column<string>(nullable: true),
                     Password = table.Column<string>(nullable: true),
-                    ProjectID = table.Column<int>(nullable: true)
+                    ProjectID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.UserID);
                     table.ForeignKey(
-                        name: "FK_Users_Project_ProjectID",
+                        name: "FK_Users_Projects_ProjectID",
                         column: x => x.ProjectID,
-                        principalTable: "Project",
+                        principalTable: "Projects",
                         principalColumn: "ProjectID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    CommentID = table.Column<int>(nullable: false),
+                    CommentContent = table.Column<string>(nullable: true),
+                    CreationTime = table.Column<DateTime>(nullable: false),
+                    AssignmentID = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.CommentID);
+                    table.ForeignKey(
+                        name: "FK_Comments_Assignments_AssignmentID",
+                        column: x => x.AssignmentID,
+                        principalTable: "Assignments",
+                        principalColumn: "AssignmentID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -83,8 +103,7 @@ namespace project_management_system.Migrations
                         name: "FK_AssignmentUser_Assignments_AssignmentID",
                         column: x => x.AssignmentID,
                         principalTable: "Assignments",
-                        principalColumn: "AssignmentID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "AssignmentID");
                     table.ForeignKey(
                         name: "FK_AssignmentUser_Users_UserID",
                         column: x => x.UserID,
@@ -104,6 +123,11 @@ namespace project_management_system.Migrations
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comments_AssignmentID",
+                table: "Comments",
+                column: "AssignmentID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_ProjectID",
                 table: "Users",
                 column: "ProjectID");
@@ -115,13 +139,16 @@ namespace project_management_system.Migrations
                 name: "AssignmentUser");
 
             migrationBuilder.DropTable(
-                name: "Assignments");
+                name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Project");
+                name: "Assignments");
+
+            migrationBuilder.DropTable(
+                name: "Projects");
         }
     }
 }

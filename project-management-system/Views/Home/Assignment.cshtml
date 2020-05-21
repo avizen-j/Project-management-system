@@ -3,7 +3,7 @@
     ViewData["Title"] = "Assignment";
 }
 <link rel="stylesheet" type="text/css" href="~/css/task.css">
-
+<script src="https://cdn.ckeditor.com/4.13.0/standard/ckeditor.js"></script>
 <div class="container">
     <div class="card border-0 shadow my-5">
         <div class="card-body p-5">
@@ -17,16 +17,43 @@
                     <h6>Description</h6>
                     <p> @Model.Assignment.AssignmentDescription</p>
 
-                    <h6>Deadline</h6>
-                    <input type='text' class="form-control">
+                    <h6>Comments:</h6>
 
-                    <h5>Comments:</h5>
-                    <h5>Title description, Dec 7, 2017</h5>
-                    <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
-                    <h5>Title description, Dec 7, 2017</h5>
-                    <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+                    <!--CRAPPY DESIGN, NEED TO CHANGE IT-->
 
+                    @foreach (var i in await Model.GetAllComments(Model.Assignment.AssignmentID))
+                    {
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="card m-1" style="width:600px; background-color: #32CD32; ">
+                                    <div class="card-body">
+                                        <h5 class="text-body">@Html.Raw(i.CommentContent)</h5>
+                                        <i>Answered: @i.CreationTime</i>
+                                        <br />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
 
+                    <form>
+                        <h6>Reply:</h6>
+                        <textarea id="editor1" class="form-control" required=""></textarea>
+                        <script>
+                            CKEDITOR.replace("editor1");
+
+                        </script>
+
+                        <br />
+                        <input type="hidden" readonly class="form-control" id="comment" name="comment" value="" />
+                        <button id="submitComment" asp-controller="Board" asp-action="Reply" asp-route-id="@Model.Assignment.AssignmentID" asp-route-comment="comment" style="margin-bottom:10px" class="btn btn-outline-primary" type="submit">Reply</button>
+                        <script>
+                            $("#submitComment").click(function (event) {
+                                var editorData = CKEDITOR.instances.editor1.getData();
+                                $('#comment').val(editorData);
+                            });
+                        </script>
+                    </form>
                 </div>
 
                 <div class="col-sm-4">
@@ -55,16 +82,9 @@
 
                     <br />
 
-                    <h6>Add task to project:</h6>
+                    <h6>Assign task to project</h6>
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Select project
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
+                        <select onchange="getproject(this.options[this.selectedIndex].value, @Model.Assignment.AssignmentID);" asp-for="@Model.Assignment.Project.ProjectID" asp-items="await Model.GetAvailableProjects()" class="custom-select"></select>
                     </div>
 
                     <br />
@@ -126,6 +146,17 @@
                 type: "POST",
                 cache: false,
                 data: { id: assignmentId, priority: sel },
+            });
+        }
+
+        function getproject(sel, assignmentId) {
+            var urlString = '';
+            $.ajax({
+                url: urlString.concat('/Board/UpdateAssignmentProject?id=', assignmentId, '&projectNumber=', sel),
+                dataType: "json",
+                type: "POST",
+                cache: false,
+                data: { id: assignmentId, projectNumber: sel },
             });
         }
 

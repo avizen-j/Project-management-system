@@ -33,6 +33,10 @@ namespace project_management_system.Context
 
         public Project Project { get; set; }
 
+        public int ProjectID { get; set; }
+
         public IList<AssignmentUser> AssignmentUsers { get; set; }
+
+        public IList<Comment> Comments { get; set; }
     }
 }

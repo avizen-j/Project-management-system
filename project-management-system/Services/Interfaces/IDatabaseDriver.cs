@@ -34,5 +34,15 @@ namespace project_management_system.Interfaces
         public Task<List<Assignment>> GetAssignmentsBelongingToUser(int userId);
         public Task<List<User>> GetUsersBelongingToAssignment(int assignmentId);
         public Task RemoveUserFromAssignment(int assignmentId, int userId);
+
+        // Comments
+        public Task AddNewComment(int assignmentId, Comment newComment);
+        public Task<List<Comment>> GetAllAssignmentComments(int assignmentId);
+
+        // Projects
+        public Task InsertProject(Project project);
+        public Task<List<Project>> GetAvailableProjects();
+        public Task UpdateAssignmentProject(int assignmentId, int pNumber);
+        public Task<Project> GetProjectById(int pNumber);
     }
 }

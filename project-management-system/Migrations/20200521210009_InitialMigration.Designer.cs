@@ -10,8 +10,8 @@ using project_management_system.Context;
 namespace project_management_system.Migrations
 {
     [DbContext(typeof(MyContext))]
-    [Migration("20200521151113_AddedProjectEntity")]
-    partial class AddedProjectEntity
+    [Migration("20200521210009_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -41,7 +41,7 @@ namespace project_management_system.Migrations
                     b.Property<int>("Priority")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProjectID")
+                    b.Property<int>("ProjectID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
@@ -72,6 +72,27 @@ namespace project_management_system.Migrations
                     b.ToTable("AssignmentUser");
                 });
 
+            modelBuilder.Entity("project_management_system.Context.Comment", b =>
+                {
+                    b.Property<int>("CommentID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AssignmentID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CommentContent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("CommentID");
+
+                    b.HasIndex("AssignmentID");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("project_management_system.Context.Project", b =>
                 {
                     b.Property<int>("ProjectID")
@@ -94,7 +115,7 @@ namespace project_management_system.Migrations
 
                     b.HasKey("ProjectID");
 
-                    b.ToTable("Project");
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("project_management_system.Context.User", b =>
@@ -105,7 +126,7 @@ namespace project_management_system.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProjectID")
+                    b.Property<int>("ProjectID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("RegistrationDate")
@@ -126,7 +147,8 @@ namespace project_management_system.Migrations
                     b.HasOne("project_management_system.Context.Project", "Project")
                         .WithMany("Assignments")
                         .HasForeignKey("ProjectID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("project_management_system.Context.AssignmentUser", b =>
@@ -134,7 +156,7 @@ namespace project_management_system.Migrations
                     b.HasOne("project_management_system.Context.Assignment", "Assignment")
                         .WithMany("AssignmentUsers")
                         .HasForeignKey("AssignmentID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("project_management_system.Context.User", "User")
@@ -144,11 +166,22 @@ namespace project_management_system.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("project_management_system.Context.Comment", b =>
+                {
+                    b.HasOne("project_management_system.Context.Assignment", "Assignment")
+                        .WithMany("Comments")
+                        .HasForeignKey("AssignmentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("project_management_system.Context.User", b =>
                 {
                     b.HasOne("project_management_system.Context.Project", "Project")
                         .WithMany("Users")
-                        .HasForeignKey("ProjectID");
+                        .HasForeignKey("ProjectID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
