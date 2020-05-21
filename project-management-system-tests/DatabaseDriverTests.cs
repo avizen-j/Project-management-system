@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using NUnit.Framework;
 using project_management_system.Context;
+using project_management_system.Enums;
 using project_management_system.Services;
 using System;
 using System.Linq;
@@ -36,8 +37,8 @@ namespace project_management_system_tests
                 AssignmentID = 111,
                 AssignmentDescription = "Test description",
                 AssignmentName = "First assignment",
-                Priority = "Minor",
-                Status = "InProgress",
+                Priority = Priority.Minor,
+                Status = Status.InProgress,
             };
 
             await _driver.InsertAssignment(expectedAssignment);
@@ -58,8 +59,8 @@ namespace project_management_system_tests
                 AssignmentID = 111,
                 AssignmentDescription = "Test description",
                 AssignmentName = "First assignment",
-                Priority = "Minor",
-                Status = "InProgress",
+                Priority = Priority.Minor,
+                Status = Status.InProgress,
             };
 
             _myContext.Assignments.Add(expectedAssignment);
@@ -124,16 +125,16 @@ namespace project_management_system_tests
                 AssignmentID = 111,
                 AssignmentDescription = "Test description",
                 AssignmentName = "First assignment",
-                Priority = "Minor",
-                Status = "ToDo",
+                Priority = Priority.Minor,
+                Status = Status.ToDo,
             };
             var assignment2 = new Assignment()
             {
                 AssignmentID = 112,
                 AssignmentDescription = "Test description 2",
                 AssignmentName = "Second assignment",
-                Priority = "Major",
-                Status = "ToDo",
+                Priority = Priority.Major,
+                Status = Status.ToDo,
             };
             _myContext.Users.Add(user);
             _myContext.Assignments.Add(assignment1);
@@ -179,8 +180,8 @@ namespace project_management_system_tests
                 AssignmentID = 111,
                 AssignmentDescription = "Test description",
                 AssignmentName = "First assignment",
-                Priority = "Minor",
-                Status = "ToDo",
+                Priority = Priority.Minor,
+                Status = Status.ToDo,
             };
 
             _myContext.Users.Add(user1);
@@ -204,14 +205,14 @@ namespace project_management_system_tests
         [Test]
         public async Task UpdateAssignmentStatus_updates_assignment_status_with_new_one()
         {
-            var newStatus = "InProgress";
+            var newStatus = Status.InProgress;
             var assignment = new Assignment()
             {
                 AssignmentID = 111,
                 AssignmentDescription = "Test description",
                 AssignmentName = "First assignment",
-                Priority = "Minor",
-                Status = "ToDo",
+                Priority = Priority.Minor,
+                Status = Status.ToDo,
             };
             _myContext.Assignments.Add(assignment);
             await _myContext.SaveChangesAsync();

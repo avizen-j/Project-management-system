@@ -14,6 +14,7 @@ namespace project_management_system.Context
         public DateTime RegistrationDate { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        public Project Project { get; set; }
         public IList<AssignmentUser> AssignmentUsers { get; set; }
     }
 }

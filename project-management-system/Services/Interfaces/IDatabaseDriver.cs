@@ -1,4 +1,5 @@
 ﻿using project_management_system.Context;
+using project_management_system.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,11 @@ namespace project_management_system.Interfaces
         public Task DeleteAssignment(int assignmentId);
         public Task<List<Assignment>> GetAllAssignments();
         public Task<Assignment> GetAssignmentById(int assignmentId);
-        public Task<List<Assignment>> GetAssignmentsByStatus(string status);
-        public Task UpdateAssignmentStatus(int assignmentId, string newStatus);
+        public Task<List<Assignment>> GetAssignmentsByStatus(Status status);
+        public Task UpdateAssignmentStatus(int assignmentId, Status newStatus);
+        public Task UpdateAssignmentPriority(int assignmentId, Priority newPriority);
+        public Task UpdateAssignmentStartDate(int assignmentId, DateTime startDate);
+        public Task UpdateAssignmentEndDate(int assignmentId, DateTime endDate);
 
 
         // Users.

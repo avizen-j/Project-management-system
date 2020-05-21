@@ -45,36 +45,49 @@
                     }
 
                     <form>
-                            <div class="input-group">
-                                <input style="margin-bottom:10px" class="form-control" type="text" id="assigneeUsername" name="assigneeUsername" placeholder="Search for assignees" />
-                                <div class="input-group-append">
-                                    <button asp-controller="Board" asp-action="UpdateAssignee" asp-route-id="@Model.Assignment.AssignmentID" asp-route-assigneeUsername="assigneeUsername" style="margin-bottom:10px" class="btn btn-outline-primary" type="submit">Search</button>
-                                </div>
+                        <div class="input-group">
+                            <input style="margin-bottom:10px" class="form-control" type="text" id="assigneeUsername" name="assigneeUsername" placeholder="Search for assignees" />
+                            <div class="input-group-append">
+                                <button asp-controller="Board" asp-action="UpdateAssignee" asp-route-id="@Model.Assignment.AssignmentID" asp-route-assigneeUsername="assigneeUsername" style="margin-bottom:10px" class="btn btn-outline-primary" type="submit">Add</button>
                             </div>
-                        </form>
+                        </div>
+                    </form>
 
-                    <h6>Watchers:</h6>
-                    <p>watcher1</p>
-                    <p>watcher2</p>
-                    <input style="margin-bottom:10px" type='text' class="form-control" placeholder="Search for watchers...">
+                    <br />
 
-                    <h6>Files:</h6>
-                    <p>fileDownloadLink1</p>
-                    <p>fileDownloadLink2</p>
-                    <a style="margin-bottom:10px" type="button" class="btn btn-outline-primary">Add file</a>
-
-                    <h6>Priority:</h6>
+                    <h6>Add task to project:</h6>
                     <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                            currentPriority
-                            <span class="caret"></span>
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Select project
                         </button>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Major</a></li>
-                            <li><a href="#">Minor</a></li>
-                            <li><a href="#">Blocker</a></li>
-                        </ul>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
                     </div>
+
+                    <br />
+
+                    <h6>Change priority:</h6>
+                    <div class="dropdown">
+                        <select onchange="getpriority(this.options[this.selectedIndex].value, @Model.Assignment.AssignmentID);" asp-for="@Model.Assignment.Priority" asp-items="Html.GetEnumSelectList<project_management_system.Enums.Priority>()" class="custom-select"></select>
+                    </div>
+
+                    <br />
+
+                    <h6>Change start date:</h6>
+                    <div class="form-group">
+                        <input asp-for="@Model.Assignment.StartDate" class="form-control" id="startDate" name="startDate" />
+                        <span asp-validation-for="@Model.Assignment.StartDate" class="text-danger"></span>
+                    </div>
+
+                    <h6>Change end date:</h6>
+                    <div class="form-group">
+                        <input asp-for="@Model.Assignment.EndDate" class="form-control" id="endDate" name="endDate" />
+                        <span asp-validation-for="@Model.Assignment.EndDate" class="text-danger"></span>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -94,7 +107,6 @@
 
     <script>
         function removeAssignee(var1, var2) {
-            console.log('var1:' + var1 + 'var2' + var2);
             var urlString = '';
             $.ajax({
                 url: urlString.concat('Board/RemoveAssignee?id=', var1, '&assigneeUsername=', var2),
@@ -104,5 +116,45 @@
                 data: { id: var1, assigneeUsername: var2 },
             });
         }
+
+        function getpriority(sel, assignmentId) {
+            console.log("assignmentId: " + assignmentId + ", newPriority: " + sel)
+            var urlString = '';
+            $.ajax({
+                url: urlString.concat('/Board/UpdateAssignmentPriority?id=', assignmentId, '&priority=', sel),
+                dataType: "json",
+                type: "POST",
+                cache: false,
+                data: { id: assignmentId, priority: sel },
+            });
+        }
+
+        $('#startDate').change(function () {
+            var date = $(this).val();
+            var assignmentId = '@Model.Assignment.AssignmentID';
+            console.log(date, 'change')
+            var urlString = '';
+            $.ajax({
+                url: urlString.concat('/Board/UpdateAssignmentStartDate?id=', assignmentId, '&startDate=', date),
+                dataType: "json",
+                type: "POST",
+                cache: false,
+                data: { id: assignmentId, startDate: date },
+            });
+        });
+
+        $('#endDate').change(function () {
+            var date = $(this).val();
+            var assignmentId = '@Model.Assignment.AssignmentID';
+            console.log(date, 'change')
+            var urlString = '';
+            $.ajax({
+                url: urlString.concat('/Board/UpdateAssignmentEndDate?id=', assignmentId, '&endDate=', date),
+                dataType: "json",
+                type: "POST",
+                cache: false,
+                data: { id: assignmentId, endDate: date },
+            });
+        });
     </script>
 }

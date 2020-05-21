@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using project_management_system.Context;
+using project_management_system.Enums;
 using project_management_system.Interfaces;
 using project_management_system.Models;
 
@@ -23,7 +24,7 @@ namespace project_management_system.Controllers
             _databaseDriver = databaseDriver;
         }
 
-        public IActionResult Index()
+        public IActionResult Projects()
         {
             HomeFormModel model = new HomeFormModel();
             return View(model);
@@ -41,7 +42,7 @@ namespace project_management_system.Controllers
         public async Task<IActionResult> Submit(HomeFormModel model)
         {
             // TEMPORARY: For demonstration and test purposes only.
-            
+
             // Creating assignment
             //var assignmentId = 569;
 
@@ -50,6 +51,7 @@ namespace project_management_system.Controllers
 
             // Linking assigning user to assignment.
             //await _databaseDriver.LinkUserAssignment(assignmentId, userId);
+
 
             return View("Index", model);
         }

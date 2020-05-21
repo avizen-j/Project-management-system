@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using project_management_system.Context;
+using project_management_system.Enums;
 using project_management_system.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace project_management_system.Models
         //}
         public Assignment Assignment { get; set; } = null!;
 
-        public async Task<List<Assignment>> GetTasksByStatus(string status)
+        public async Task<List<Assignment>> GetTasksByStatus(Status status)
         {
             return await _databaseDriver.GetAssignmentsByStatus(status);
             //return _databaseDriver.GetAssignmentsByStatus(status).Result;

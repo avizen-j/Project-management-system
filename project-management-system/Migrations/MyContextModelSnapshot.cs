@@ -15,7 +15,7 @@ namespace project_management_system.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.3")
+                .HasAnnotation("ProductVersion", "3.1.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -30,13 +30,27 @@ namespace project_management_system.Migrations
                     b.Property<string>("AssignmentName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Priority")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProjectID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("AssignmentID");
+
+                    b.HasIndex("ProjectID");
 
                     b.ToTable("Assignments");
                 });
@@ -56,6 +70,31 @@ namespace project_management_system.Migrations
                     b.ToTable("AssignmentUser");
                 });
 
+            modelBuilder.Entity("project_management_system.Context.Project", b =>
+                {
+                    b.Property<int>("ProjectID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ProjectDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProjectName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ProjectID");
+
+                    b.ToTable("Project");
+                });
+
             modelBuilder.Entity("project_management_system.Context.User", b =>
                 {
                     b.Property<int>("UserID")
@@ -63,6 +102,9 @@ namespace project_management_system.Migrations
 
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ProjectID")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");
@@ -72,7 +114,17 @@ namespace project_management_system.Migrations
 
                     b.HasKey("UserID");
 
+                    b.HasIndex("ProjectID");
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("project_management_system.Context.Assignment", b =>
+                {
+                    b.HasOne("project_management_system.Context.Project", "Project")
+                        .WithMany("Assignments")
+                        .HasForeignKey("ProjectID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("project_management_system.Context.AssignmentUser", b =>
@@ -88,6 +140,13 @@ namespace project_management_system.Migrations
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("project_management_system.Context.User", b =>
+                {
+                    b.HasOne("project_management_system.Context.Project", "Project")
+                        .WithMany("Users")
+                        .HasForeignKey("ProjectID");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using project_management_system.Context;
+using project_management_system.Enums;
 using project_management_system.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,17 +42,47 @@ namespace project_management_system.Services
             return await _context.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignmentId);
         }
 
-        public async Task<List<Assignment>> GetAssignmentsByStatus(string status)
+        public async Task<List<Assignment>> GetAssignmentsByStatus(Status status)
         {
             return await _context.Assignments.Where(t => t.Status == status).ToListAsync();
         }
 
-        public async Task UpdateAssignmentStatus(int assignmentId, string newStatus)
+        public async Task UpdateAssignmentStatus(int assignmentId, Status newStatus)
         {
             var assignment = await _context.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignmentId);
             if (assignment != default)
             {
                 assignment.Status = newStatus;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateAssignmentPriority(int assignmentId, Priority newPriority)
+        {
+            var assignment = await _context.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignmentId);
+            if (assignment != default)
+            {
+                assignment.Priority = newPriority;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateAssignmentStartDate(int assignmentId, DateTime startDate)
+        {
+            var assignment = await _context.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignmentId);
+            if (assignment != default)
+            {
+                assignment.StartDate = startDate;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateAssignmentEndDate(int assignmentId, DateTime endDate)
+        {
+            var assignment = await _context.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignmentId);
+            if (assignment != default)
+            {
+                assignment.EndDate = endDate;
                 await _context.SaveChangesAsync();
             }
         }

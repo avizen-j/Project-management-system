@@ -13,7 +13,7 @@ namespace project_management_system.Context
 
         public MyContext(DbContextOptions options) : base(options)
         {
-            
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -29,6 +29,15 @@ namespace project_management_system.Context
                .HasOne(x => x.Assignment)
                .WithMany(x => x.AssignmentUsers)
                .HasForeignKey(x => x.AssignmentID);
+
+            modelBuilder.Entity<Project>()
+               .HasMany(c => c.Users)
+               .WithOne(e => e.Project);
+
+            modelBuilder.Entity<Project>()
+               .HasMany(c => c.Assignments)
+               .WithOne(e => e.Project)
+               .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -33,56 +33,108 @@ namespace project_management_system.Controllers
 
         public async Task<IActionResult> Task(int id)
         {
-            var assignment = await _databaseDriver.GetAssignmentById(id);
-            var taskModel = new TaskModel(_databaseDriver);
-            taskModel.Assignment = assignment;
-            return View("../Home/Assignment", taskModel);
+            try
+            {
+                var assignment = await _databaseDriver.GetAssignmentById(id);
+                var taskModel = new TaskModel(_databaseDriver);
+                taskModel.Assignment = assignment;
+                return View("../Home/Assignment", taskModel);
+            }
+            catch
+            {
+                return View("../Shared/Error", new ErrorViewModel { Message = "Task cannot be opened" });
+            }
         }
 
         public async Task<IActionResult> RemoveAssignee(int id, string assignedUser)
         {
-
-            var assignment = await _databaseDriver.GetAssignmentById(id);
-            var user = await _databaseDriver.GetUserByUsername(assignedUser);
             try
             {
+                var assignment = await _databaseDriver.GetAssignmentById(id);
+                var user = await _databaseDriver.GetUserByUsername(assignedUser);
                 await _databaseDriver.RemoveUserFromAssignment(assignment.AssignmentID, user.UserID);
+                var taskModel = new TaskModel(_databaseDriver);
+                taskModel.Assignment = assignment;
+                return View("../Home/Assignment", taskModel);
             }
             catch
             {
                 return View("../Shared/Error", new ErrorViewModel { Message = "Assignee cannot be removed" });
             }
-            var taskModel = new TaskModel(_databaseDriver);
-            taskModel.Assignment = assignment;
-            return View("../Home/Assignment", taskModel);
         }
 
         public async Task<IActionResult> UpdateAssignee(int id, string assigneeUsername)
         {
-            var assignment = await _databaseDriver.GetAssignmentById(id);
-            var user = await _databaseDriver.GetUserByUsername(assigneeUsername);
             try
             {
+                var assignment = await _databaseDriver.GetAssignmentById(id);
+                var user = await _databaseDriver.GetUserByUsername(assigneeUsername);
                 await _databaseDriver.LinkUserAssignment(assignment.AssignmentID, user.UserID);
+                var taskModel = new TaskModel(_databaseDriver);
+                taskModel.Assignment = assignment;
+                return View("../Home/Assignment", taskModel);
             }
             catch
             {
                 return View("../Shared/Error", new ErrorViewModel { Message = "Assignee cannot be added" });
             }
-            var taskModel = new TaskModel(_databaseDriver);
-            taskModel.Assignment = assignment;
-            return View("../Home/Assignment", taskModel);
         }
         public async Task<IActionResult> CreateTask(TaskModel taskModel)
         {
-            Assignment assignment = taskModel.Assignment;
-            assignment.AssignmentID = random.Next(10000);
-            assignment.Status = Status.ToDo.ToString();
-            await _databaseDriver.InsertAssignment(assignment);
-            return RedirectToAction("Index");
+            try
+            {
+                Assignment assignment = taskModel.Assignment;
+                assignment.AssignmentID = random.Next(10000);
+                assignment.Status = Status.ToDo;
+                await _databaseDriver.InsertAssignment(assignment);
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View("../Shared/Error", new ErrorViewModel { Message = "Task cannot be created" });
+            }
         }
 
-        public async Task UpdateBoardAssignment(int assignmentId, string status)
+        public async Task<IActionResult> UpdateAssignmentPriority(int id, Priority priority)
+        {
+            try
+            {
+                await _databaseDriver.UpdateAssignmentPriority(id, priority);
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View("../Shared/Error", new ErrorViewModel { Message = "Priority cannot be updated" });
+            }
+        }
+
+        public async Task<IActionResult> UpdateAssignmentStartDate(int id, DateTime startDate)
+        {
+            try
+            {
+                await _databaseDriver.UpdateAssignmentStartDate(id, startDate);
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View("../Shared/Error", new ErrorViewModel { Message = "Start date cannot be updated" });
+            }
+        }
+
+        public async Task<IActionResult> UpdateAssignmentEndDate(int id, DateTime endDate)
+        {
+            try
+            {
+                await _databaseDriver.UpdateAssignmentEndDate(id, endDate);
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View("../Shared/Error", new ErrorViewModel { Message = "Start date cannot be updated" });
+            }
+        }
+
+        public async Task UpdateBoardAssignment(int assignmentId, Status status)
         {
             await _databaseDriver.UpdateAssignmentStatus(assignmentId, status);
         }

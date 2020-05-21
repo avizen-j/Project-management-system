@@ -3,10 +3,26 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace project_management_system.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class AddedProjectEntity : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Project",
+                columns: table => new
+                {
+                    ProjectID = table.Column<int>(nullable: false),
+                    ProjectName = table.Column<string>(nullable: true),
+                    ProjectDescription = table.Column<string>(nullable: true),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    StartDate = table.Column<DateTime>(nullable: false),
+                    EndDate = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Project", x => x.ProjectID);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Assignments",
                 columns: table => new
@@ -14,12 +30,22 @@ namespace project_management_system.Migrations
                     AssignmentID = table.Column<int>(nullable: false),
                     AssignmentName = table.Column<string>(nullable: true),
                     AssignmentDescription = table.Column<string>(nullable: true),
-                    Priority = table.Column<string>(nullable: true),
-                    Status = table.Column<string>(nullable: true)
+                    Priority = table.Column<int>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    StartDate = table.Column<DateTime>(nullable: false),
+                    EndDate = table.Column<DateTime>(nullable: false),
+                    ProjectID = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Assignments", x => x.AssignmentID);
+                    table.ForeignKey(
+                        name: "FK_Assignments_Project_ProjectID",
+                        column: x => x.ProjectID,
+                        principalTable: "Project",
+                        principalColumn: "ProjectID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -29,11 +55,18 @@ namespace project_management_system.Migrations
                     UserID = table.Column<int>(nullable: false),
                     RegistrationDate = table.Column<DateTime>(nullable: false),
                     Username = table.Column<string>(nullable: true),
-                    Password = table.Column<string>(nullable: true)
+                    Password = table.Column<string>(nullable: true),
+                    ProjectID = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.UserID);
+                    table.ForeignKey(
+                        name: "FK_Users_Project_ProjectID",
+                        column: x => x.ProjectID,
+                        principalTable: "Project",
+                        principalColumn: "ProjectID",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -61,9 +94,19 @@ namespace project_management_system.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Assignments_ProjectID",
+                table: "Assignments",
+                column: "ProjectID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AssignmentUser_UserID",
                 table: "AssignmentUser",
                 column: "UserID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_ProjectID",
+                table: "Users",
+                column: "ProjectID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -76,6 +119,9 @@ namespace project_management_system.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Project");
         }
     }
 }
