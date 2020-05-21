@@ -22,7 +22,7 @@ namespace project_management_system.Services
             _context.Assignments.Add(task);
             await _context.SaveChangesAsync();
         }
-        
+
         public async Task DeleteAssignment(int assignmentId)
         {
             var assignment = await _context.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignmentId);
@@ -79,6 +79,16 @@ namespace project_management_system.Services
             return await _context.Users.FirstOrDefaultAsync(t => t.UserID == userId);
         }
 
+        public async Task<User> GetUserByUsername(string username)
+        {
+            return await _context.Users.FirstOrDefaultAsync(t => t.Username == username);
+        }
+
+        public async Task<List<string>> GetUserStartingWithTerm(string term)
+        {
+            return await _context.Users.Where(t => t.Username.StartsWith(term)).Select(t => t.Username).ToListAsync();
+        }
+
         // Link user and task(assignment).
         public async Task LinkUserAssignment(int assignmentId, int userId)
         {
@@ -104,6 +114,17 @@ namespace project_management_system.Services
         {
             return await _context.Assignments.Where(item => item.AssignmentUsers.Any(j => j.UserID == userId))
                                              .ToListAsync();
+        }
+
+        public async Task RemoveUserFromAssignment(int assignmentId, int userId)
+        {
+            var assignment = await _context.Assignments.Include(a => a.AssignmentUsers).FirstOrDefaultAsync(item => item.AssignmentID == assignmentId);
+            if (assignment != default)
+            {
+                var assignmentUser = assignment.AssignmentUsers.FirstOrDefault(item => item.UserID == userId);
+                assignment.AssignmentUsers.Remove(assignmentUser);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

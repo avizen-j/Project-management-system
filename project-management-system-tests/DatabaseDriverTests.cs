@@ -200,5 +200,27 @@ namespace project_management_system_tests
             result[1].Should().Be(user2);
             result[2].Should().Be(user3);
         }
+
+        [Test]
+        public async Task UpdateAssignmentStatus_updates_assignment_status_with_new_one()
+        {
+            var newStatus = "InProgress";
+            var assignment = new Assignment()
+            {
+                AssignmentID = 111,
+                AssignmentDescription = "Test description",
+                AssignmentName = "First assignment",
+                Priority = "Minor",
+                Status = "ToDo",
+            };
+            _myContext.Assignments.Add(assignment);
+            await _myContext.SaveChangesAsync();
+
+            var oldStatus = await _myContext.Assignments.Where(r => r.AssignmentID == assignment.AssignmentID).Select(t => t.Status).SingleOrDefaultAsync();
+            await _driver.UpdateAssignmentStatus(assignment.AssignmentID, newStatus);
+            var updatedStatus = await _myContext.Assignments.Where(r => r.AssignmentID == assignment.AssignmentID).Select(t => t.Status).SingleOrDefaultAsync();
+
+            updatedStatus.Should().Be(newStatus);
+        }
     }
 }

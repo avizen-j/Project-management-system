@@ -29,6 +29,18 @@ namespace project_management_system.Models
             //return _databaseDriver.GetAssignmentsByStatus(status).Result;
         }
 
+        public async Task<List<string>> GetAllAssignees(int assignmentId)
+        {
+            var assigneeUsernames = new List<string>();
+            var assignees = await _databaseDriver.GetUsersBelongingToAssignment(assignmentId);
+            foreach (var assignee in assignees)
+            {
+                assigneeUsernames.Add(assignee.Username);
+            }
+
+            return assigneeUsernames;
+        }
+
     }
 
 }

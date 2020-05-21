@@ -31,10 +31,28 @@
 
                 <div class="col-sm-4">
                     <h6>Assignees:</h6>
-                    <p>assigner1</p>
-                    <p>assigner2</p>
-                    <input style="margin-bottom:10px" type='text' class="form-control" placeholder="Search for assignees...">
-                     
+                    @{ var assignees = await Model.GetAllAssignees(@Model.Assignment.AssignmentID);}
+                    @for (int i = 0; i < assignees.Count; i++)
+                    {
+                        <form>
+                            <div class="input-group">
+                                <input type="text" readonly class="form-control" id="assignedUser" name="assignedUser" value="@assignees[i]" />
+                                <div class="input-group-append">
+                                    <button asp-controller="Board" asp-action="RemoveAssignee" asp-route-id="@Model.Assignment.AssignmentID" asp-route-assignedUser="assignedUser" aria-label="Close" style="margin-bottom:10px" class="btn btn-outline-danger" type="submit">Remove</button>
+                                </div>
+                            </div>
+                        </form>
+                    }
+
+                    <form>
+                            <div class="input-group">
+                                <input style="margin-bottom:10px" class="form-control" type="text" id="assigneeUsername" name="assigneeUsername" placeholder="Search for assignees" />
+                                <div class="input-group-append">
+                                    <button asp-controller="Board" asp-action="UpdateAssignee" asp-route-id="@Model.Assignment.AssignmentID" asp-route-assigneeUsername="assigneeUsername" style="margin-bottom:10px" class="btn btn-outline-primary" type="submit">Search</button>
+                                </div>
+                            </div>
+                        </form>
+
                     <h6>Watchers:</h6>
                     <p>watcher1</p>
                     <p>watcher2</p>
@@ -62,3 +80,29 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#assigneeUsername").autocomplete({
+                source: '/api/search/searchAssignee'
+            });
+        });
+    </script>
+
+    <script>
+        function removeAssignee(var1, var2) {
+            console.log('var1:' + var1 + 'var2' + var2);
+            var urlString = '';
+            $.ajax({
+                url: urlString.concat('Board/RemoveAssignee?id=', var1, '&assigneeUsername=', var2),
+                dataType: "json",
+                type: "POST",
+                cache: false,
+                data: { id: var1, assigneeUsername: var2 },
+            });
+        }
+    </script>
+}

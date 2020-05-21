@@ -22,10 +22,13 @@ namespace project_management_system.Interfaces
         public Task DeleteUser(string username);
         public Task<List<User>> GetAllUsers();
         public Task<User> GetUserById(int userId);
+        public Task<User> GetUserByUsername(string username);
+        public Task<List<string>> GetUserStartingWithTerm(string term);
 
         // Links.
         public Task LinkUserAssignment(int assignmentId, int userId);
         public Task<List<Assignment>> GetAssignmentsBelongingToUser(int userId);
         public Task<List<User>> GetUsersBelongingToAssignment(int assignmentId);
+        public Task RemoveUserFromAssignment(int assignmentId, int userId);
     }
 }

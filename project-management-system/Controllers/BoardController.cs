@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using project_management_system.Context;
@@ -31,24 +33,59 @@ namespace project_management_system.Controllers
 
         public async Task<IActionResult> Task(int id)
         {
-            var task = await _databaseDriver.GetAssignmentById(id);
-            var taskModel = new TaskModel();
-            taskModel.Assignment = task;
+            var assignment = await _databaseDriver.GetAssignmentById(id);
+            var taskModel = new TaskModel(_databaseDriver);
+            taskModel.Assignment = assignment;
+            return View("../Home/Assignment", taskModel);
+        }
+
+        public async Task<IActionResult> RemoveAssignee(int id, string assignedUser)
+        {
+
+            var assignment = await _databaseDriver.GetAssignmentById(id);
+            var user = await _databaseDriver.GetUserByUsername(assignedUser);
+            try
+            {
+                await _databaseDriver.RemoveUserFromAssignment(assignment.AssignmentID, user.UserID);
+            }
+            catch
+            {
+                return View("../Shared/Error", new ErrorViewModel { Message = "Assignee cannot be removed" });
+            }
+            var taskModel = new TaskModel(_databaseDriver);
+            taskModel.Assignment = assignment;
+            return View("../Home/Assignment", taskModel);
+        }
+
+        public async Task<IActionResult> UpdateAssignee(int id, string assigneeUsername)
+        {
+            var assignment = await _databaseDriver.GetAssignmentById(id);
+            var user = await _databaseDriver.GetUserByUsername(assigneeUsername);
+            try
+            {
+                await _databaseDriver.LinkUserAssignment(assignment.AssignmentID, user.UserID);
+            }
+            catch
+            {
+                return View("../Shared/Error", new ErrorViewModel { Message = "Assignee cannot be added" });
+            }
+            var taskModel = new TaskModel(_databaseDriver);
+            taskModel.Assignment = assignment;
             return View("../Home/Assignment", taskModel);
         }
         public async Task<IActionResult> CreateTask(TaskModel taskModel)
-        {      
-            Assignment task = taskModel.Assignment;
-            task.AssignmentID = random.Next(10000);
-            task.Status = Status.ToDo.ToString();
-            await _databaseDriver.InsertAssignment(task);
+        {
+            Assignment assignment = taskModel.Assignment;
+            assignment.AssignmentID = random.Next(10000);
+            assignment.Status = Status.ToDo.ToString();
+            await _databaseDriver.InsertAssignment(assignment);
             return RedirectToAction("Index");
         }
+
         public async Task UpdateBoardAssignment(int assignmentId, string status)
         {
             await _databaseDriver.UpdateAssignmentStatus(assignmentId, status);
         }
-
 
     }
 }
