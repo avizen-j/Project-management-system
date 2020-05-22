@@ -38,7 +38,7 @@ function dropIt(ev) {
 function AjaxDisplayString(var1, var2) {
     var urlString = '';
     $.ajax({
-        url: urlString.concat('Board/UpdateBoardAssignment?assignmentId=', var1, '&status=', var2),
+        url: urlString.concat('UpdateBoardAssignment?assignmentId=', var1, '&status=', var2),
         dataType: "json",
         type: "POST",
         cache: false,
