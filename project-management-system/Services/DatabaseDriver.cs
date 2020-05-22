@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using project_management_system.Context;
+using project_management_system.Enums;
 using project_management_system.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +24,7 @@ namespace project_management_system.Services
             _context.Assignments.Add(task);
             await _context.SaveChangesAsync();
         }
-        
+
         public async Task DeleteAssignment(int assignmentId)
         {
             var assignment = await _context.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignmentId);
@@ -40,17 +42,59 @@ namespace project_management_system.Services
             return await _context.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignmentId);
         }
 
-        public async Task<List<Assignment>> GetAssignmentsByStatus(string status)
+        public async Task<List<Assignment>> GetAssignmentsByStatus(Status status)
         {
             return await _context.Assignments.Where(t => t.Status == status).ToListAsync();
         }
 
-        public async Task UpdateAssignmentStatus(int assignmentId, string newStatus)
+        public async Task UpdateAssignmentStatus(int assignmentId, Status newStatus)
         {
             var assignment = await _context.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignmentId);
             if (assignment != default)
             {
                 assignment.Status = newStatus;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateAssignmentPriority(int assignmentId, Priority newPriority)
+        {
+            var assignment = await _context.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignmentId);
+            if (assignment != default)
+            {
+                assignment.Priority = newPriority;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateAssignmentStartDate(int assignmentId, DateTime startDate)
+        {
+            var assignment = await _context.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignmentId);
+            if (assignment != default)
+            {
+                assignment.StartDate = startDate;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateAssignmentEndDate(int assignmentId, DateTime endDate)
+        {
+            var assignment = await _context.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignmentId);
+            if (assignment != default)
+            {
+                assignment.EndDate = endDate;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+
+        public async Task UpdateAssignmentProject(int assignmentId, int pNumber)
+        {
+            var project = await _context.Projects.FirstOrDefaultAsync(t => t.ProjectID == pNumber);
+            var assignment = await _context.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignmentId);
+            if (assignment != default && project != default)
+            {
+                assignment.ProjectID = project.ProjectID;
                 await _context.SaveChangesAsync();
             }
         }
@@ -79,6 +123,16 @@ namespace project_management_system.Services
             return await _context.Users.FirstOrDefaultAsync(t => t.UserID == userId);
         }
 
+        public async Task<User> GetUserByUsername(string username)
+        {
+            return await _context.Users.FirstOrDefaultAsync(t => t.Username == username);
+        }
+
+        public async Task<List<string>> GetUserStartingWithTerm(string term)
+        {
+            return await _context.Users.Where(t => t.Username.StartsWith(term)).Select(t => t.Username).ToListAsync();
+        }
+
         // Link user and task(assignment).
         public async Task LinkUserAssignment(int assignmentId, int userId)
         {
@@ -105,5 +159,52 @@ namespace project_management_system.Services
             return await _context.Assignments.Where(item => item.AssignmentUsers.Any(j => j.UserID == userId))
                                              .ToListAsync();
         }
+
+        public async Task RemoveUserFromAssignment(int assignmentId, int userId)
+        {
+            var assignment = await _context.Assignments.Include(a => a.AssignmentUsers).FirstOrDefaultAsync(item => item.AssignmentID == assignmentId);
+            if (assignment != default)
+            {
+                var assignmentUser = assignment.AssignmentUsers.FirstOrDefault(item => item.UserID == userId);
+                assignment.AssignmentUsers.Remove(assignmentUser);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        // Comments
+        public async Task AddNewComment(int assignmentId, Comment comment)
+        {
+            // _context.Comments.Add(comment);
+            var result = await _context.Assignments.FirstOrDefaultAsync(b => b.AssignmentID == assignmentId);
+            if (result.Comments == null)
+            {
+                result.Comments = new List<Comment>();
+            }
+            result.Comments.Add(comment);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<Comment>> GetAllAssignmentComments(int assignmentId)
+        {
+            return await _context.Comments.Where(item => item.AssignmentID == assignmentId).ToListAsync();
+        }
+
+        // Projects.
+        public async Task InsertProject(Project project)
+        {
+            _context.Projects.Add(project);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<Project>> GetAvailableProjects()
+        {
+            return await _context.Projects.ToListAsync();
+        }
+
+        public async Task<Project> GetProjectById(int pNumber)
+        {
+            return await _context.Projects.FirstOrDefaultAsync(item => item.ProjectID == pNumber);
+        }
+
     }
 }

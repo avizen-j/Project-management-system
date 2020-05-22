@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using project_management_system.Context;
+using project_management_system.Enums;
 using project_management_system.Interfaces;
 using project_management_system.Models;
 
@@ -23,7 +24,7 @@ namespace project_management_system.Controllers
             _databaseDriver = databaseDriver;
         }
 
-        public IActionResult Index()
+        public IActionResult Projects()
         {
             HomeFormModel model = new HomeFormModel();
             return View(model);
@@ -40,16 +41,17 @@ namespace project_management_system.Controllers
 
         public async Task<IActionResult> Submit(HomeFormModel model)
         {
-            // TEMPORARY: For demonstration and test purposes only.
-            
-            // Creating assignment
-            //var assignmentId = 569;
+            //var project = new Project()
+            //{
+            //    ProjectID = random.Next(100),
+            //    ProjectName = "Startup project",
+            //    ProjectDescription = "For those who want to try something new",
+            //    CreationDate = DateTime.Now,
+            //    StartDate = DateTime.Now.AddDays(-3),
+            //    EndDate = DateTime.Now.AddDays(10),
+            //};
 
-            // Creating user
-            //var userId = 255;
-
-            // Linking assigning user to assignment.
-            //await _databaseDriver.LinkUserAssignment(assignmentId, userId);
+            //await _databaseDriver.InsertProject(project);
 
             return View("Index", model);
         }

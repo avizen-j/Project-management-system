@@ -23,18 +23,18 @@
                 </div>
 
                <div id='boardlists' class="board-lists">
-                    @foreach (var item in Enum.GetValues(typeof(project_management_system.Enums.Status)))
+                    @foreach (project_management_system.Enums.Status item in Enum.GetValues(typeof(project_management_system.Enums.Status)))
                     {
                         <div id='@item' class="board-list" ondrop="dropIt(event)" ondragover="allowDrop(event)">
                             <div class="list-title">
                                 @item.ToString()
                             </div>
 
-                            @foreach (var task in await Model.GetTasksByStatus(item.ToString()))
+                            @foreach (var task in await Model.GetTasksByStatus(item))
                             {
                                 <div id='@task.AssignmentID' class="card" draggable="true" ondragstart="dragStart(event)">
                                     <b>@task.AssignmentName</b>
-                                    Priority: @task.Status
+                                    Priority: @task.Priority
                                     <a asp-controller="Board" asp-action="Task" asp-route-id="@task.AssignmentID">View task</a>
                                     @*UNCOMMENT LINE BELLOW IF YOU WANT TO USE MODAL*@
                                     @*<a href="#exampleModalCenter" data-toggle="modal" data-target="#exampleModalCenter_@item" data-id="@item">View task</a>*@
