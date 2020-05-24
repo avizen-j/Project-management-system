@@ -23,5 +23,7 @@ namespace project_management_system.Context
         public int ProjectID { get; set; }
 
         public IList<AssignmentUser> AssignmentUsers { get; set; }
+
+        public string Email { get; set; }
     }
 }

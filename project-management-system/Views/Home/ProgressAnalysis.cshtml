@@ -1,0 +1,81 @@
+﻿@model ProjectModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <form role="form" enctype="multipart/form-data" id="progressAnalysisPage">
+
+        <div class="container">
+            <h2>@Model.Project.ProjectName</h2>
+            </br>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">To Do</th>
+                        <th scope="col">In Progress</th>
+                        <th scope="col">In Review</th>
+                        <th scope="col">Done</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ var assignments = await Model.GetAssignmentsByProjectId(@Model.Project.ProjectID);}
+                    <tr>
+                        <th scope="row">Trivial</th>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.ToDo, project_management_system.Enums.Priority.Trivial)</h3></td>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.InProgress, project_management_system.Enums.Priority.Trivial)</h3></td>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.InReview, project_management_system.Enums.Priority.Trivial)</h3></td>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.Done, project_management_system.Enums.Priority.Trivial)</h3></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Minor</th>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.ToDo, project_management_system.Enums.Priority.Minor)</h3></td>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.InProgress, project_management_system.Enums.Priority.Minor)</h3></td>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.InReview, project_management_system.Enums.Priority.Minor)</h3></td>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.Done, project_management_system.Enums.Priority.Minor)</h3></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Major</th>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.ToDo, project_management_system.Enums.Priority.Major)</h3></td>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.InProgress, project_management_system.Enums.Priority.Major)</h3></td>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.InReview, project_management_system.Enums.Priority.Major)</h3></td>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.Done, project_management_system.Enums.Priority.Major)</h3></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Critical</th>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.ToDo, project_management_system.Enums.Priority.Critical)</h3></td>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.InProgress, project_management_system.Enums.Priority.Critical)</h3></td>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.InReview, project_management_system.Enums.Priority.Critical)</h3></td>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.Done, project_management_system.Enums.Priority.Critical)</h3></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Blocker</th>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.ToDo, project_management_system.Enums.Priority.Blocker)</h3></td>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.InProgress, project_management_system.Enums.Priority.Blocker)</h3></td>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.InReview, project_management_system.Enums.Priority.Blocker)</h3></td>
+                        <td><h3>@Model.CountAssignmentsByStatusAndPriority(assignments, project_management_system.Enums.Status.Done, project_management_system.Enums.Priority.Blocker)</h3></td>
+                    </tr>
+                </tbody>
+            </table>
+            </br>
+            <div class="progress" style="height:30px">
+                <div id="progress_bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@Model.CountDoneAssignments(assignments)" style="height:35 px"
+                     aria-valuemin="0" aria-valuemax="100">
+                    <h3>@Model.CountDoneAssignments(assignments) / @Model.CountAllAssignments(assignments)</h3>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="doneAssignments" value="@Model.CountDoneAssignments(assignments)" />
+        <input type="hidden" id="allAssignments" value="@Model.CountAllAssignments(assignments)" />
+
+    </form>
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(document).ready(function () {
+        var $doneAssignments = $('#doneAssignments');
+        var $allAssignments = $('#allAssignments');
+        var width = $doneAssignments.val() / $allAssignments.val() * 100;
+        $('#progress_bar').css('width', width + "%");
+    });
+</script>

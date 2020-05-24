@@ -41,6 +41,10 @@ namespace project_management_system.Services
         {
             return await _context.Assignments.FirstOrDefaultAsync(t => t.AssignmentID == assignmentId);
         }
+        public async Task<List<Assignment>> GetAssignmentsByProjectId(int projectId)
+        {
+            return await _context.Assignments.Where(t => t.ProjectID == projectId).ToListAsync();
+        }
 
         public async Task<List<Assignment>> GetAssignmentsByStatus(Status status)
         {
@@ -127,6 +131,10 @@ namespace project_management_system.Services
         {
             return await _context.Users.FirstOrDefaultAsync(t => t.Username == username);
         }
+        public async Task<List<User>> GetUsersByProjectId(int projectId)
+        {
+            return await _context.Users.Where(t => t.ProjectID == projectId).ToListAsync();
+        }
 
         public async Task<List<string>> GetUserStartingWithTerm(string term)
         {
@@ -204,6 +212,25 @@ namespace project_management_system.Services
         public async Task<Project> GetProjectById(int pNumber)
         {
             return await _context.Projects.FirstOrDefaultAsync(item => item.ProjectID == pNumber);
+        }
+        public async Task UpdateProjectStartDate(int projectId, DateTime startDate)
+        {
+            var project = await _context.Projects.FirstOrDefaultAsync(t => t.ProjectID == projectId);
+            if (project != default)
+            {
+                project.StartDate = startDate;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateProjectEndDate(int projectId, DateTime endDate)
+        {
+            var project = await _context.Projects.FirstOrDefaultAsync(t => t.ProjectID == projectId);
+            if (project != default)
+            {
+                project.EndDate = endDate;
+                await _context.SaveChangesAsync();
+            }
         }
 
     }

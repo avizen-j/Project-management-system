@@ -1,0 +1,84 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model ProjectModel
+
+<div class="container">
+    <div class="card border-0 shadow my-5">
+        <div class="card-body p-5">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h5>@Model.Project.ProjectName</h5>
+
+                    <h6>Description</h6>
+                    <p> @Model.Project.ProjectDescription</p>
+
+                    <h6>Start date:</h6>
+                    <div class="form-group">
+                        <input asp-for="@Model.Project.StartDate" class="form-control" id="startDate" name="startDate" />
+                        <span asp-validation-for="@Model.Project.StartDate" class="text-danger"></span>
+                    </div>
+
+                    <h6>End date:</h6>
+                    <div class="form-group">
+                        <input asp-for="@Model.Project.EndDate" class="form-control" id="endDate" name="endDate" />
+                        <span asp-validation-for="@Model.Project.EndDate" class="text-danger"></span>
+                    </div>
+
+                    <h6>Assignments:</h6>
+                    <div class="list-group">
+                        @foreach (var item in await Model.GetAssignmentsByProjectId(Model.Project.ProjectID)) {
+                        <a class="list-group-item list-group-item-action" asp-controller="Board" asp-action="Task" asp-route-id="@item.AssignmentID">@item.AssignmentName</a>
+                        }
+                    </div>
+
+                    </br>
+
+                    <h6>Assignees:</h6>
+                    <div class="list-group">
+                        @foreach (var item in await Model.GetUsersByProjectId(Model.Project.ProjectID)) {
+                        <a class="list-group-item list-group-item-action">@item.Username</a>
+                        }
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+
+        $('#startDate').change(function () {
+            var date = $(this).val();
+            var projectId = '@Model.Project.ProjectID';
+            console.log(date, 'change')
+            var urlString = '';
+            $.ajax({
+                url: urlString.concat('/Project/UpdateProjectStartDate?id=', projectId, '&startDate=', date),
+                dataType: "json",
+                type: "POST",
+                cache: false,
+                data: { id: projectId, startDate: date },
+            });
+        });
+
+        $('#endDate').change(function () {
+            var date = $(this).val();
+            var projectId = '@Model.Project.ProjectID';
+            console.log(date, 'change')
+            var urlString = '';
+            $.ajax({
+                url: urlString.concat('/Project/UpdateProjectEndDate?id=', projectId, '&endDate=', date),
+                dataType: "json",
+                type: "POST",
+                cache: false,
+                data: { id: projectId, endDate: date },
+            });
+        });
+    </script>
+}

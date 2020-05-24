@@ -41,6 +41,17 @@ namespace project_management_system.Models
 
             return assigneeUsernames;
         }
+        public async Task<List<string>> GetAllUsers()
+        {
+            var usernames = new List<string>();
+            var users = await _databaseDriver.GetAllUsers();
+            foreach (var user in users)
+            {
+                usernames.Add(user.Username);
+            }
+
+            return usernames;
+        }
 
         public async Task<List<Comment>> GetAllComments(int assignmentId)
         {
