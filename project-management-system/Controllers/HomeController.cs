@@ -24,7 +24,7 @@ namespace project_management_system.Controllers
             _databaseDriver = databaseDriver;
         }
 
-        public IActionResult Projects()
+        public IActionResult Main()
         {
             HomeFormModel model = new HomeFormModel();
             return View(model);
@@ -52,6 +52,32 @@ namespace project_management_system.Controllers
             //};
 
             //await _databaseDriver.InsertProject(project);
+
+            //var assignment = new Assignment()
+            //{
+            //    AssignmentID = random.Next(100),
+            //    AssignmentDescription = "Test description",
+            //    AssignmentName = "Update table fields",
+            //    CreationDate = DateTime.Now,
+            //    StartDate = DateTime.Now,
+            //    EndDate = DateTime.Now.AddMinutes(2),
+            //    Priority = Priority.Major,
+            //    Status = Status.Done,
+            //    Type = Enums.Type.NewFeature,
+            //};
+
+            //await _databaseDriver.InsertAssignment(assignment);
+
+            //var duplicateUser = new User()
+            //{
+            //    UserID = random.Next(199),
+            //    Username = "MantasDeveloperis",
+            //    Password = "djskdsfjklfdskjl",
+            //    RegistrationDate = DateTime.Now,
+            //    Email = "universityadvisor.lt@gmail.com",
+            //};
+
+            //await _databaseDriver.InsertUser(duplicateUser);
 
             return View("Index", model);
         }

@@ -9,6 +9,6 @@ namespace project_management_system.Models
     public class HomeFormModel
     {
         public User User { get; set; }
-        public List<string> random { get; set; }
+        public Project Project { get; set; }
     }
 }
