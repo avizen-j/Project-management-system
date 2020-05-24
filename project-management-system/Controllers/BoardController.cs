@@ -57,6 +57,19 @@ namespace project_management_system.Controllers
             }
         }
 
+        public async Task<IActionResult> DeleteAssignment(int id)
+        {
+            try
+            {
+                await _databaseDriver.DeleteAssignment(id);
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View("../Shared/Error", new ErrorViewModel { Message = "Task cannot be deleted" });
+            }
+        }
+
         public async Task<IActionResult> RemoveAssignee(int id, string assignedUser)
         {
             try

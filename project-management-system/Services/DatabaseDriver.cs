@@ -233,5 +233,13 @@ namespace project_management_system.Services
             }
         }
 
+        public async Task DeleteProject(int projectId)
+        {
+            var project = await _context.Projects.FirstOrDefaultAsync(t => t.ProjectID == projectId);
+            _context.Projects.Remove(project);
+            await _context.SaveChangesAsync();
+        }
+
+
     }
 }
