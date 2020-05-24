@@ -110,6 +110,7 @@ namespace project_management_system.Controllers
                 Assignment assignment = taskModel.Assignment;
                 assignment.AssignmentID = random.Next(10000);
                 assignment.Status = Status.ToDo;
+                assignment.ProjectID = taskModel.Assignment.ProjectID;
                 await _databaseDriver.InsertAssignment(assignment);
                 return RedirectToAction("Index");
             }
@@ -195,7 +196,7 @@ namespace project_management_system.Controllers
             }
             catch (Exception ex)
             {
-                return View("../Shared/Error", new ErrorViewModel { Message = "Comment cannot be added" + ex.StackTrace});
+                return View("../Shared/Error", new ErrorViewModel { Message = "Comment cannot be added" });
             }
         }
 
