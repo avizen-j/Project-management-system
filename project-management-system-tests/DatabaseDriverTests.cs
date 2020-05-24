@@ -6,6 +6,7 @@ using project_management_system.Context;
 using project_management_system.Enums;
 using project_management_system.Services;
 using System;
+using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -161,6 +162,79 @@ namespace project_management_system_tests
             var updatedDate = await _myContext.Assignments.Where(r => r.AssignmentID == assignment.AssignmentID).Select(t => t.EndDate).SingleOrDefaultAsync();
 
             updatedDate.Should().Be(newDate);
+        }
+
+        [Test]
+        public async Task GetAssigmentById_gets_assignment_by_id()
+        {
+            var assignment = new Assignment()
+            {
+                AssignmentID = 111,
+                AssignmentDescription = "Test description",
+                AssignmentName = "First assignment",
+                Priority = Priority.Minor,
+                Status = Status.ToDo,
+                EndDate = DateTime.Now,
+            };
+
+            await _driver.InsertAssignment(assignment);
+
+            var actualAssignment = await _driver.GetAssignmentById(111);
+            actualAssignment.Should().Be(assignment);
+        }
+
+        [Test]
+        public async Task GetAssignmentsByStatus_gets_assignment_by_status()
+        {
+            var assignment = new Assignment()
+            {
+                AssignmentID = 111,
+                AssignmentDescription = "Test description",
+                AssignmentName = "First assignment",
+                Priority = Priority.Minor,
+                Status = Status.ToDo,
+                EndDate = DateTime.Now,
+            };
+
+            await _driver.InsertAssignment(assignment);
+
+            var actualAssignmentList = await _driver.GetAssignmentsByStatus(Status.ToDo);
+
+            actualAssignmentList.Should().NotBeNullOrEmpty();
+            actualAssignmentList[0].Should().Be(assignment);
+        }
+
+
+        [Test]
+        public async Task GetAllAssignments_gets_all_assignments()
+        {
+            var assignment = new Assignment()
+            {
+                AssignmentID = 111,
+                AssignmentDescription = "Test description",
+                AssignmentName = "First assignment",
+                Priority = Priority.Minor,
+                Status = Status.ToDo,
+                EndDate = DateTime.Now,
+            };
+
+            var assignment2 = new Assignment()
+            {
+                AssignmentID = 222,
+                AssignmentDescription = "Test description",
+                AssignmentName = "Second assignment",
+                Priority = Priority.Major,
+                Status = Status.InProgress,
+                EndDate = DateTime.Now,
+            };
+
+            await _driver.InsertAssignment(assignment);
+            await _driver.InsertAssignment(assignment2);
+
+            var actualAssignmentList = await _driver.GetAllAssignments();
+
+            actualAssignmentList.Should().NotBeNullOrEmpty();
+            actualAssignmentList.Count().Should().Be(2);
         }
 
         // Users. 

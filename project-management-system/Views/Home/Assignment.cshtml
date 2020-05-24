@@ -19,13 +19,11 @@
 
                     <h6>Comments:</h6>
 
-                    <!--CRAPPY DESIGN, NEED TO CHANGE IT-->
-
                     @foreach (var i in await Model.GetAllComments(Model.Assignment.AssignmentID))
                     {
                         <div class="row">
                             <div class="col-lg-4">
-                                <div class="card m-1" style="width:600px; background-color: #32CD32; ">
+                                <div class="card m-1" style="width:600px; background-color: #808080; ">
                                     <div class="card-body">
                                         <h5 class="text-body">@Html.Raw(i.CommentContent)</h5>
                                         <i>Answered: @i.CreationTime</i>
@@ -96,18 +94,21 @@
 
                     <br />
 
-                    <h6>Change start date:</h6>
+                    <h6>Start date:</h6>
                     <div class="form-group">
                         <input asp-for="@Model.Assignment.StartDate" class="form-control" id="startDate" name="startDate" />
                         <span asp-validation-for="@Model.Assignment.StartDate" class="text-danger"></span>
                     </div>
 
-                    <h6>Change end date:</h6>
+                    <h6>End date:</h6>
                     <div class="form-group">
                         <input asp-for="@Model.Assignment.EndDate" class="form-control" id="endDate" name="endDate" />
                         <span asp-validation-for="@Model.Assignment.EndDate" class="text-danger"></span>
                     </div>
 
+                    <form>
+                        <button id="deleteAssignment" asp-controller="Board" asp-action="DeleteAssignment" asp-route-id="@Model.Assignment.AssignmentID" style="margin-bottom:10px" class="btn btn-outline-primary" type="submit">Delete assignment</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -129,7 +130,7 @@
         function removeAssignee(var1, var2) {
             var urlString = '';
             $.ajax({
-                url: urlString.concat('Board/RemoveAssignee?id=', var1, '&assigneeUsername=', var2),
+                url: urlString.concat('/Board/RemoveAssignee?id=', var1, '&assigneeUsername=', var2),
                 dataType: "json",
                 type: "POST",
                 cache: false,

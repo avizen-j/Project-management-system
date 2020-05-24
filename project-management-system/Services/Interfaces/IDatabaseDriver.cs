@@ -14,6 +14,7 @@ namespace project_management_system.Interfaces
         public Task DeleteAssignment(int assignmentId);
         public Task<List<Assignment>> GetAllAssignments();
         public Task<Assignment> GetAssignmentById(int assignmentId);
+        public Task<List<Assignment>> GetAssignmentsByProjectId(int projectId);
         public Task<List<Assignment>> GetAssignmentsByStatus(Status status);
         public Task UpdateAssignmentStatus(int assignmentId, Status newStatus);
         public Task UpdateAssignmentPriority(int assignmentId, Priority newPriority);
@@ -27,6 +28,7 @@ namespace project_management_system.Interfaces
         public Task<List<User>> GetAllUsers();
         public Task<User> GetUserById(int userId);
         public Task<User> GetUserByUsername(string username);
+        public Task<List<User>> GetUsersByProjectId(int projectId);
         public Task<List<string>> GetUserStartingWithTerm(string term);
 
         // Links.
@@ -44,5 +46,8 @@ namespace project_management_system.Interfaces
         public Task<List<Project>> GetAvailableProjects();
         public Task UpdateAssignmentProject(int assignmentId, int pNumber);
         public Task<Project> GetProjectById(int pNumber);
+        public Task UpdateProjectStartDate(int projectId, DateTime startDate);
+        public Task UpdateProjectEndDate(int projectId, DateTime endDate);
+        public Task DeleteProject(int projectId);
     }
 }

@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
 using project_management_system.Context;
 using project_management_system.Enums;
@@ -31,6 +32,14 @@ namespace project_management_system.Controllers
             return View("../Home/Board", model);
         }
 
+        public async Task<IActionResult> ProgressAnalysis(int projectId)
+        {
+            var project = await _databaseDriver.GetProjectById(projectId);
+            var model = new ProjectModel(_databaseDriver);
+            model.Project = project;
+            return View("../Home/ProgressAnalysis", model);
+        }
+
         public async Task<IActionResult> Task(int id)
         {
             try
@@ -45,6 +54,19 @@ namespace project_management_system.Controllers
             catch
             {
                 return View("../Shared/Error", new ErrorViewModel { Message = "Task cannot be opened" });
+            }
+        }
+
+        public async Task<IActionResult> DeleteAssignment(int id)
+        {
+            try
+            {
+                await _databaseDriver.DeleteAssignment(id);
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View("../Shared/Error", new ErrorViewModel { Message = "Task cannot be deleted" });
             }
         }
 

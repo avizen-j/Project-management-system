@@ -2,132 +2,120 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-        <link rel="stylesheet" type="text/css" href="~/css/board.css">
-        <link rel="stylesheet" type="text/css" href="~/css/task.css">
+    <link rel="stylesheet" type="text/css" href="~/css/board.css">
+    <link rel="stylesheet" type="text/css" href="~/css/task.css">
 
-    </head>
+</head>
 
-    <form role="form" enctype="multipart/form-data" id="boardMainPage">
+<form role="form" enctype="multipart/form-data" id="boardMainPage">
 
 
-        <div class="container">
+    <div class="container">
 
-            <div class="board-layout" style="border-radius: 15px">
-                <div class="left">
-                    <div class="board-text">Task board</div>
-                </div>
+        <div class="board-layout" style="border-radius: 15px">
+            <div class="left">
+                <div class="board-text">Task board</div>
+            </div>
 
-               <div id='boardlists' class="board-lists">
-                    @foreach (project_management_system.Enums.Status item in Enum.GetValues(typeof(project_management_system.Enums.Status)))
-                    {
-                        <div id='@item' class="board-list" ondrop="dropIt(event)" ondragover="allowDrop(event)">
-                            <div class="list-title">
-                                @item.ToString()
-                            </div>
-
-                            @foreach (var task in await Model.GetTasksByStatus(item))
-                            {
-                                <div id='@task.AssignmentID' class="card" draggable="true" ondragstart="dragStart(event)">
-                                    <b>@task.AssignmentName</b>
-                                    Priority: @task.Priority
-                                    <a asp-controller="Board" asp-action="Task" asp-route-id="@task.AssignmentID">View task</a>
-                                    @*UNCOMMENT LINE BELLOW IF YOU WANT TO USE MODAL*@
-                                    @*<a href="#exampleModalCenter" data-toggle="modal" data-target="#exampleModalCenter_@item" data-id="@item">View task</a>*@
-                                </div>
-                                <div class="modal fade" id="exampleModalCenter_@item" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                @item
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-primary">Save changes</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-
+            <div id='boardlists' class="board-lists">
+                @foreach (project_management_system.Enums.Status item in Enum.GetValues(typeof(project_management_system.Enums.Status)))
+                {
+                    <div id='@item' class="board-list" ondrop="dropIt(event)" ondragover="allowDrop(event)">
+                        <div class="list-title">
+                            @item.ToString()
                         </div>
-                    }
 
-                </div>
-
-                <div>
-                    <a class="btn btn-primary" href="#newTaskModal" data-toggle="modal" data-target="#newTaskModal" data-id="1">New task</a>
-                </div>
-
-                <div class="modal fade" id="newTaskModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLongTitle">Create new task</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
+                        @foreach (var task in await Model.GetTasksByStatus(item))
+                        {
+                            <div id='@task.AssignmentID' class="card" draggable="true" ondragstart="dragStart(event)">
+                                <b>@task.AssignmentName</b>
+                                Priority: @task.Priority
+                                <a asp-controller="Board" asp-action="Task" asp-route-id="@task.AssignmentID">View task</a>
                             </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label>Task name:</label>
-                                        <input asp-for="@Model.Assignment.AssignmentName" type="text" class="form-control" id="taskName" placeholder="Enter task name">
+                        }
 
-                                        <label >Description:</label>
-                                        <textarea asp-for="@Model.Assignment.AssignmentDescription" class="form-control" id="taskDescription" rows="3"></textarea>
+                    </div>
+                }
 
-                                        <label>Project:</label>
-                                        <select class="form-control" id="projectSelect">
-                                            <option>project1</option>
-                                            <option>project2</option>
-                                            <option>project3</option>
-                                        </select>
+            </div>
 
+            <div>
+                <a class="btn btn-primary" href="#newTaskModal" data-toggle="modal" data-target="#newTaskModal" data-id="1">New task</a>
+            </div>
+
+            <div class="modal fade" id="newTaskModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Create new task</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Task name:</label>
+                                    <input asp-for="@Model.Assignment.AssignmentName" type="text" class="form-control" id="taskName" placeholder="Enter task name">
+
+                                    <label>Description:</label>
+                                    <textarea asp-for="@Model.Assignment.AssignmentDescription" class="form-control" id="taskDescription" rows="3"></textarea>
+
+                                    <label>Project:</label>
+                                    <div class="dropdown">
+                                        <select asp-for="@Model.Assignment.Project" asp-items="await Model.GetAvailableProjects()" class="custom-select"></select>
                                     </div>
-                                    <div class="col-md-6">
 
-                                        <label>Priority:</label>
-                                        <select asp-for="@Model.Assignment.Priority" class="form-control" id="prioritySelect">
-                                            <option>Minor</option>
-                                            <option>Major</option>
-                                            <option>Critical</option>
-                                            <option>Blocker</option>
-                                        </select>
+                                    
+                                </div>
+                                <div class="col-md-6">
 
-                                        <label>Type:</label>
-                                        <select class="form-control" id="typeSelect">
-                                            <option>New feature</option>
-                                            <option>Bug</option>
-                                            <option>TechDebt</option>
-                                            <option>Improvement</option>
-                                        </select>
-
-                                        <label>Project:</label>
-                                        <input type="text" class="form-control" id="taskDeadline" placeholder="Enter deadline">
+                                    <label>Priority:</label>
+                                    <div class="dropdown">
+                                        <select asp-for="@Model.Assignment.Priority" asp-items="Html.GetEnumSelectList<project_management_system.Enums.Priority>()" class="custom-select"></select>
                                     </div>
+
+                                    <label>Start date:</label>
+                                    <div class="form-group">
+                                        <input asp-for="@Model.Assignment.StartDate" type="date" asp-format="{yyyy-MM-dd}" class="form-control">
+                                    </div>
+
+                                    <label>End date:</label>
+                                    <div class="form-group">
+                                        <input asp-for="@Model.Assignment.EndDate" type="date" asp-format="{yyyy-MM-dd}" class="form-control">
+                                    </div>
+
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <button class="btn btn-primary" type="submit" asp-controller="Board" asp-action="CreateTask">Create</button>
-                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button class="btn btn-primary" type="submit" asp-controller="Board" asp-action="CreateTask">Create</button>
                         </div>
                     </div>
                 </div>
-
             </div>
-            <script src='~/js/dragdropswap.js'></script>
+
         </div>
 
-    </form>
+        <script src='~/js/dragdropswap.js'></script>
+    </div>
+
+</form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#assigneeUsername").autocomplete({
+                source: '/api/search/searchAssignee'
+            });
+        });
+
+    </script>}
