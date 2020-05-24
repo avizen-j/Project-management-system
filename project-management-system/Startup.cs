@@ -63,7 +63,7 @@ namespace project_management_system
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Main}/{id?}");
+                    pattern: "{controller=Board}/{action=Index}/{id?}");
             });
         }
     }

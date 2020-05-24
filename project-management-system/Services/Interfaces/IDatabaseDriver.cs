@@ -48,5 +48,6 @@ namespace project_management_system.Interfaces
         public Task<Project> GetProjectById(int pNumber);
         public Task UpdateProjectStartDate(int projectId, DateTime startDate);
         public Task UpdateProjectEndDate(int projectId, DateTime endDate);
+        public Task DeleteProject(int projectId);
     }
 }

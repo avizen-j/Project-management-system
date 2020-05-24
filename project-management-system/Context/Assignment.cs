@@ -26,11 +26,9 @@ namespace project_management_system.Context
         public DateTime CreationDate { get; set; }
 
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{yyyy-MM-dd}")]
         public DateTime StartDate { get; set; }
 
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{yyyy-MM-dd}")]
         public DateTime EndDate { get; set; }
 
         public Project Project { get; set; }

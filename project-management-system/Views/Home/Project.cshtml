@@ -2,13 +2,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @model ProjectModel
-
+<link rel="stylesheet" type="text/css" href="~/css/task.css">
 <div class="container">
     <div class="card border-0 shadow my-5">
         <div class="card-body p-5">
             <div class="row">
                 <div class="col-sm-8">
-                    <h5>@Model.Project.ProjectName</h5>
+                    <h4>@Model.Project.ProjectName</h4>
 
                     <h6>Description</h6>
                     <p> @Model.Project.ProjectDescription</p>
@@ -27,8 +27,9 @@
 
                     <h6>Assignments:</h6>
                     <div class="list-group">
-                        @foreach (var item in await Model.GetAssignmentsByProjectId(Model.Project.ProjectID)) {
-                        <a class="list-group-item list-group-item-action" asp-controller="Board" asp-action="Task" asp-route-id="@item.AssignmentID">@item.AssignmentName</a>
+                        @foreach (var item in await Model.GetAssignmentsByProjectId(Model.Project.ProjectID))
+                        {
+                            <a class="list-group-item list-group-item-action" asp-controller="Board" asp-action="Task" asp-route-id="@item.AssignmentID">@item.AssignmentName</a>
                         }
                     </div>
 
@@ -36,18 +37,24 @@
 
                     <h6>Assignees:</h6>
                     <div class="list-group">
-                        @foreach (var item in await Model.GetUsersByProjectId(Model.Project.ProjectID)) {
-                        <a class="list-group-item list-group-item-action">@item.Username</a>
+                        @foreach (var item in await Model.GetUsersByProjectId(Model.Project.ProjectID))
+                        {
+                            <a class="list-group-item list-group-item-action">@item.Username</a>
                         }
                     </div>
 
+
+                    <form>
+                        <button id="deleteProject" asp-controller="Project" asp-action="DeleteProject" asp-route-id="@Model.Project.ProjectID" style="margin-top:10px" class="btn btn-outline-primary" type="submit">Delete project</button>
+                    </form>
 
                 </div>
             </div>
         </div>
     </div>
-
 </div>
+
+
 @section Scripts {
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>

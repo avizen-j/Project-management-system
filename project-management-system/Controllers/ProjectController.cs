@@ -27,6 +27,20 @@ namespace project_management_system.Controllers
             return View("../Home/Projects", model);
         }
 
+        public async Task<IActionResult> DeleteProject(int id)
+        {
+            try
+            {
+                await _databaseDriver.DeleteProject(id);
+                return RedirectToAction("Projects");
+            }
+            catch
+            {
+                return View("../Shared/Error", new ErrorViewModel { Message = "Project cannot be deleted" });
+            }
+
+        }
+
         public async Task<IActionResult> Project(int id)
         {
             try
