@@ -107,6 +107,14 @@ namespace project_management_system.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    string messages = string.Join("; ", ModelState.Values
+                                        .SelectMany(x => x.Errors)
+                                        .Select(x => x.ErrorMessage));
+                    return View("../Shared/Error", new ErrorViewModel { Message = messages });
+                }
+
                 Assignment assignment = taskModel.Assignment;
                 assignment.AssignmentID = random.Next(10000);
                 assignment.Status = Status.ToDo;
@@ -194,7 +202,7 @@ namespace project_management_system.Controllers
 
                 return RedirectToAction("Task", new { id = id });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return View("../Shared/Error", new ErrorViewModel { Message = "Comment cannot be added" });
             }

@@ -29,7 +29,7 @@ namespace project_management_system
             services.AddControllersWithViews();
             services.AddDbContext<MyContext>(options =>
             {
-                options.UseSqlServer(Environment.GetEnvironmentVariable("PSI_SQL_SERVER"),
+                options.UseSqlServer(Environment.GetEnvironmentVariable("TESTAVIMAS_SQL_SERVER"),
                     sqlServerOptionsAction: sqlOptions =>
                     {
                         sqlOptions.EnableRetryOnFailure(
