@@ -13,6 +13,9 @@ namespace project_management_system.Context
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int AssignmentID { get; set; }
 
+        [Required]
+        [MinLength(10)]
+        [MaxLength(50)]
         public string AssignmentName { get; set; }
 
         public string AssignmentDescription { get; set; }
